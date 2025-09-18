@@ -1,24 +1,23 @@
 import { View, Text, StyleSheet } from 'react-native'
 import React from 'react'
 
-const Home = () => {
+const Library = () => {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Welcome to R & G </Text>
-      <Text style={styles.sub}>Your daily mix is ready</Text>
+      <Text style={styles.text}>Your Library</Text>
+      <Text style={styles.sub}>Saved songs, playlists, and albums</Text>
     </View>
   )
 }
 
-export default Home
+export default Library
 
 const styles = StyleSheet.create({
   container: { 
     flex: 1, 
     backgroundColor: '#0F1115', 
     justifyContent: 'center', 
-    alignItems: 'center' 
-  },
+    alignItems: 'center' },
   text: { 
     color: '#E6E8F0', 
     fontSize: 20, 
@@ -26,6 +25,5 @@ const styles = StyleSheet.create({
   },
   sub: { 
     color: '#9AA4B2', 
-    marginTop: 8 
-  }
+    marginTop: 8 }
 })

@@ -32,20 +32,20 @@ export default function TabsLayout() {
       }}
       />
       <Tabs.Screen 
-      name="post"
+      name="search"
       options={{
-        title: "Post",
+        title: "Search",
         tabBarIcon: ({ color, size}) => (
-          <Ionicons name="chatbox-ellipses-outline" size={size} color={color} />
+          <Ionicons name="search-outline" size={size} color={color} />
         ),
       }}
       />
       <Tabs.Screen 
-      name="settings"
+      name="library"
       options={{
-        title: "Settings",
+        title: "Library",
         tabBarIcon: ({ color, size}) => (
-          <Ionicons name="settings-outline" size={size} color={color} />
+          <Ionicons name="library-outline" size={size} color={color} />
         ),
       }}
       />

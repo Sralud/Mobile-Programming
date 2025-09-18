@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
-import { useRouter, Link } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
+import React, { useState } from 'react';
+import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 const Registration = () => {
   const router = useRouter();
@@ -13,7 +13,7 @@ const Registration = () => {
 
       <View style={styles.logoWrapper}>
         <Image
-          source={require('../assets/images/imageReg.png')}
+          source={require('../assets/images/imageReg1.png')}
           style={styles.logoImage}
           resizeMode="contain"
         />
@@ -21,8 +21,8 @@ const Registration = () => {
 
       <View style={styles.logoRow}>
         <Text style={styles.logo}>
-          <Text style={styles.logoMint}>FREE</Text>
-          <Text style={styles.logoLy}>LY</Text>
+          <Text style={styles.logoMint}>R &</Text>
+          <Text style={styles.logoLy}> G</Text>
         </Text>
       </View>
 
@@ -116,8 +116,8 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   logoImage: {
-    width: 100,
-    height: 100,
+    width: 150,
+    height: 150,
   },
   logoRow: {
     flexDirection: 'row',
