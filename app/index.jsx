@@ -1,13 +1,13 @@
-import React, { use, useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { Link, useRouter } from 'expo-router';
+import React, { useState } from 'react';
+import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 const Index = () => {
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   const handleLogin = () => {
-    router.replace("/(tabs)/home");
+    router.push("/(tabs)/home");
   };
 
   return (
@@ -15,13 +15,13 @@ const Index = () => {
 
       <View style={styles.logoSection}>
         <Image 
-          source={require('../assets/images/imageIndex.png')}
+          source={require('../assets/images/imageIndex1.png')}
           style={styles.logoImage}
           resizeMode="contain"
         />
         <Text style={styles.logo}>
-          <Text style={styles.logoMint}>FREE</Text>
-          <Text style={styles.logoLy}>LY</Text>
+          <Text style={styles.logoMint}>R &</Text>
+          <Text style={styles.logoLy}> G</Text>
         </Text>
       </View>
 
@@ -95,8 +95,8 @@ const styles = StyleSheet.create({
     marginBottom: 50,
   },
   logoImage: {
-    width: 100,
-    height: 100,
+    width: 150,
+    height: 150,
     marginBottom: 10,
   },
   logo: {
