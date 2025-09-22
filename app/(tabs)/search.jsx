@@ -33,7 +33,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#1F2330',
     color: '#E6E8F0',
-    marginBottom: 16
+    marginBottom: 16,
+    marginTop: 40
   },
   resultText: { 
     color: '#E6E8F0' 

@@ -96,7 +96,7 @@ const Registration = () => {
       <Text style={styles.loginText}>
         Already have an account?{" "}
         <Link href="/" style={styles.loginLink}>
-          Login here
+          Login
         </Link>
       </Text>
 
