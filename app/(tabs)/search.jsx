@@ -1,7 +1,14 @@
 import { View, Text, TextInput, StyleSheet, TouchableOpacity } from "react-native";
 import React, { useState } from "react";
 
-const categories = ["Pop", "Rock", "Hip-Hop", "Jazz", "R&B", "Electronic"];
+const categories = [
+  "Indie Dream",
+  "Lo-Fi Drift",
+  "Synth Nights",
+  "Acoustic Vibes",
+  "Chillhop Lounge",
+  "Future Beats",
+];
 
 const Search = () => {
   const [query, setQuery] = useState("");
@@ -10,16 +17,16 @@ const Search = () => {
     <View style={styles.container}>
       <TextInput
         style={styles.input}
-        placeholder="Search songs, artists, albums..."
-        placeholderTextColor="#9AA4B2"
+        placeholder="Type to discover new sounds..."
+        placeholderTextColor="#8F9BB3"
         value={query}
         onChangeText={setQuery}
       />
 
-      <Text style={styles.sectionTitle}>Browse All</Text>
+      <Text style={styles.sectionTitle}>Explore Genres</Text>
       <View style={styles.grid}>
         {categories.map((cat) => (
-          <TouchableOpacity key={cat} style={styles.catCard}>
+          <TouchableOpacity key={cat} style={styles.catCard} activeOpacity={0.8}>
             <Text style={styles.catText}>{cat}</Text>
           </TouchableOpacity>
         ))}
@@ -31,28 +38,36 @@ const Search = () => {
 export default Search;
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#0F1115", padding: 16 },
+  container: { flex: 1, backgroundColor: "#0B0E14", padding: 16 },
   input: {
-    backgroundColor: "#171923",
-    borderRadius: 12,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
+    backgroundColor: "rgba(30,35,45,0.8)",
+    borderRadius: 20,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
     borderWidth: 1,
     borderColor: "#1F2330",
     color: "#E6E8F0",
-    marginBottom: 16,
-    marginTop: 40
+    marginBottom: 20,
+    marginTop: 40,
   },
-  sectionTitle: { color: "#fff", fontSize: 18, fontWeight: "700", marginVertical: 10 },
+  sectionTitle: { color: "#fff", fontSize: 20, fontWeight: "700", marginVertical: 12 },
   grid: { flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between" },
   catCard: {
-    backgroundColor: "#1A202C",
     width: "48%",
-    height: 100,
-    borderRadius: 12,
+    height: 110,
+    borderRadius: 16,
     justifyContent: "center",
     alignItems: "center",
-    marginBottom: 12,
+    marginBottom: 14,
+    backgroundColor: "#151821",
+    shadowColor: "#00FFE0",
+    shadowOpacity: 0.12,
+    shadowRadius: 5,
   },
-  catText: { color: "#fff", fontWeight: "600" },
+  catText: {
+    color: "#00FFE0",
+    fontWeight: "700",
+    fontSize: 15,
+    letterSpacing: 0.5,
+  },
 });
