@@ -82,6 +82,6 @@ const styles = StyleSheet.create({
   },
   image: { width: "100%", height: 130 },
   cardFooter: { padding: 10 },
-  cardTitle: { color: "#fff", fontWeight: "600", fontSize: 14 },
+  cardTitle: { color: "#fff", fontWeight: "600", fontSize: 13 },
   cardArtist: { color: "#9AA4B2", fontSize: 12, marginTop: 2 },
 });
