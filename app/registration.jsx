@@ -107,13 +107,13 @@ const Registration = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#222',
+    backgroundColor: '#111',
     padding: 20,
     justifyContent: 'center',
   },
   logoWrapper: {
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: 1,
   },
   logoImage: {
     width: 150,
@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 40,
+    marginBottom: 20,
   },
   logo: {
     fontSize: 60,
@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
   inputWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#111',
+    backgroundColor: '#222',
     borderRadius: 8,
     paddingHorizontal: 10,
     padding: 6,

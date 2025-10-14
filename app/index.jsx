@@ -85,7 +85,7 @@ const Index = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#222',
+    backgroundColor: '#111',
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
   inputWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#111',
+    backgroundColor: '#222',
     borderRadius: 8,
     paddingHorizontal: 10,
     padding: 6,
@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   forgot: {
-    color: '#fff',
+    color: '#fff', 
     fontSize: 12,
   },
   forgotLink: {
