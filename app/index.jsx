@@ -7,7 +7,7 @@ const Index = () => {
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   const handleLogin = () => {
-    router.push("/(tabs)/home");
+    router.push("/splash");
   };
 
   return (
