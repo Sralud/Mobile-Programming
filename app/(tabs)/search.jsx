@@ -18,7 +18,7 @@ const Search = () => {
       <TextInput
         style={styles.input}
         placeholder="Type to discover new sounds..."
-        placeholderTextColor="#8F9BB3"
+        placeholderTextColor="#9AA4B2"
         value={query}
         onChangeText={setQuery}
       />
@@ -60,9 +60,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 14,
     backgroundColor: "#151821",
+    elevation: 5,
     shadowColor: "#00FFE0",
-    shadowOpacity: 0.12,
-    shadowRadius: 5,
+    shadowOpacity: 0.15,
   },
   catText: {
     color: "#00FFE0",
