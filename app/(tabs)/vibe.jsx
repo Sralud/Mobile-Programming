@@ -1,20 +1,13 @@
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Image } from "react-native";
 
-// Filipino-Themed Moods
 const moods = [
-  // Relate: The feeling of deep understanding, often used for emotional songs.
-  { emoji: "😭", label: "Relate", playlist: "Hugot Ballads" }, 
-  // Hataw: To go full-out; an energetic, all-out effort, often used for dancing.
+  { emoji: "😭", label: "Relapse", playlist: "Hugot" }, 
   { emoji: "🕺", label: "Hataw", playlist: "Party All Night (OPM Pop)" },
-  // Senti: Short for sentimental; a melancholic, nostalgic, or calm feeling.
   { emoji: "☁️", label: "Senti", playlist: "Acoustic Tadhana" },
-  // Gigil: An overwhelming urge to squeeze something cute; often used playfully for high energy.
   { emoji: "🤪", label: "Gigil", playlist: "K-Pop/P-Pop Hype" }, 
 ];
 
-// Placeholder for the image source (replace with your actual asset path)
-// You might want to use a more culturally relevant image here!
 const playlistImagePlaceholder = require("../../assets/images/mix1.png");
 
 export default function VibePicker() {
