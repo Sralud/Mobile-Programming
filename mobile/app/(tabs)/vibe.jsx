@@ -152,9 +152,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     alignSelf: "flex-start",
   },
-  playText: {
+  playText: { 
     color: "#00FFE0",
     fontWeight: "600",
     fontSize: 14,
+    
   },
 });
