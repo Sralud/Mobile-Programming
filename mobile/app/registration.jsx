@@ -21,9 +21,7 @@ const Registration = () => {
 
       <View style={styles.logoRow}>
         <Text style={styles.logo}>
-          <Text style={styles.logoMint}>R </Text>
-          <Text style={styles.logoN}>&</Text>
-          <Text style={styles.logoLy}> G</Text>
+          <Text style={styles.logoMint}>Rhevo</Text>
         </Text>
       </View>
 
@@ -127,18 +125,9 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   logo: {
+    color: '#00ff88',
+    fontFamily: "Audiowide_400Regular",
     fontSize: 60,
-    fontWeight: 'bold',
-    marginRight: 8,
-  },
-  logoMint: {
-    color: '#00ff88',
-  },
-  logoN: {
-    color: "#fff",
-  },
-  logoLy: {
-    color: '#00ff88',
   },
   inputWrapper: {
     flexDirection: 'row',

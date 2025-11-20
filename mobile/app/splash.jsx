@@ -20,9 +20,7 @@ export default function Splash() {
         resizeMode="contain"
       />
       <Text style={styles.appName}>
-        <Text style={{ color: "#00ff88" }}>R</Text>
-        <Text style={{ color: "#fff" }}>&</Text>
-        <Text style={{ color: "#00ff88" }}>G</Text>
+        <Text style={{ color: "#00ff88" }}>Rhevo</Text>
       </Text>
       <Text style={styles.loadingText}>Setting the mood...</Text>
       <ActivityIndicator size="large" color="#00ff88" style={{ marginTop: 20 }} />
@@ -43,9 +41,9 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   appName: {
-    fontSize: 50,
-    fontWeight: "bold",
-    marginBottom: 20,
+    color: '#00ff88',
+    fontFamily: "Audiowide_400Regular",
+    fontSize: 60,
   },
   loadingText: {
     color: "#fff",

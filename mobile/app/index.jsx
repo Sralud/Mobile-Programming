@@ -20,9 +20,7 @@ const Index = () => {
           resizeMode="contain"
         />
         <Text style={styles.logo}>
-          <Text style={styles.logoMint}>R </Text>
-          <Text style={styles.logoN}>&</Text>
-          <Text style={styles.logoLy}> G</Text>
+          <Text style={styles.logoMint}>Rhevo</Text>
         </Text>
       </View>
 
@@ -101,17 +99,9 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   logo: {
+    color: '#00ff88',
+    fontFamily: "Audiowide_400Regular",
     fontSize: 60,
-    fontWeight: 'bold',
-  },
-  logoMint: {
-    color: '#00ff88',
-  },
-  logoN: {
-    color: "#fff",
-  },
-  logoLy: {
-    color: '#00ff88',
   },
   inputWrapper: {
     flexDirection: 'row',
