@@ -41,5 +41,7 @@ app-example
 # backend
 backend/.env
 
+*.env
+
 # native android folder (not needed with Expo Go)
 android/
