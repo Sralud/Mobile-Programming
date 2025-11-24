@@ -2,16 +2,16 @@ import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView } from "rea
 import React from "react";
 
 const library = [
-  { id: "1", title: "Echo Memories", subtitle: "127 tracks", icon: require("../../assets/images/mix1.png") },
-  { id: "2", title: "Golden Hour Mix", subtitle: "47 tracks", icon: require("../../assets/images/mix2.png") },
+  { id: "1", title: "One Direction", subtitle: "127 tracks", icon: require("../../assets/images/onedirection.jpg") },
+  { id: "2", title: "Golden Hour Mix", subtitle: "47 tracks", icon: require("../../assets/images/goldenhour.jpg") },
   { id: "3", title: "Drive & Flow", subtitle: "23 tracks", icon: require("../../assets/images/mix3.png") },
 ];
 
 const recentlyPlayed = [
   { id: "1", title: "City Lights", artist: "Luna Vale", cover: require("../../assets/images/mix1.png") },
-  { id: "2", title: "Retro Drive", artist: "Demon Hunter", cover: require("../../assets/images/mix2.png") },
-  { id: "3", title: "Midnight Echo", artist: "Nova Gray", cover: require("../../assets/images/mix3.png") },
-  { id: "4", title: "Summer Bloom", artist: "Sky Nova", cover: require("../../assets/images/mix2.png") },
+  { id: "2", title: "Riff Off", artist: "Pitch Perfect", cover: require("../../assets/images/pitchperfect.jpg") },
+  { id: "3", title: "Midnight Echo", artist: "Nova Gray", cover: require("../../assets/images/night.jpg") },
+  { id: "4", title: "Summer Bloom", artist: "Sky Nova", cover: require("../../assets/images/bloom.jpg") },
 ];
 
 const Library = () => {
@@ -46,7 +46,7 @@ const Library = () => {
       ))}
 
       {/* Recently Played */}
-      <Text style={[styles.sectionTitle, { marginTop: 35 }]}>Recently Played</Text>
+      <Text style={[styles.sectionTitle, { marginTop: 0.5}]}>Recently Played</Text>
 
       <ScrollView
         horizontal
@@ -157,13 +157,14 @@ const styles = StyleSheet.create({
   recentScroll: {
     paddingLeft: 2,
     paddingRight: 20,
+    paddingBottom: 40,
     gap: 18,
   },
   recentCard: {
     width: 130,
     backgroundColor: "#151821",
     borderRadius: 18,
-    padding: 12,
+    padding: 20,
     alignItems: "center",
     shadowColor: "#00FFE0",
     shadowOpacity: 0.1,

@@ -21,7 +21,7 @@ export default function NowPlaying() {
       {/* 🎵 Album Art */}
       <View style={styles.artContainer}>
         <Image
-          source={require("../assets/images/imageIndex1.png")}
+          source={require("../assets/images/onedirection.jpg")}
           style={styles.albumArt}
           resizeMode="cover" // ensures it fills perfectly without overlap
         />
