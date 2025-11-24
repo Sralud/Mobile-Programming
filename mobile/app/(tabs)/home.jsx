@@ -1,17 +1,25 @@
 import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity } from "react-native";
 import React from "react";
 
-const tracks = [
-  { id: "1", title: "Neon Skies", artist: "Nova Gray", image: require("../../assets/images/mix1.png"), genre: "Synthwave" },
-  { id: "2", title: "K-Pop", artist: "Demon Hunter", image: require("../../assets/images/mix2.png"), genre: "Chillhop" },
-  { id: "3", title: "Eclipse", artist: "Luna Vale", image: require("../../assets/images/mix3.png"), genre: "Indie Pop" },
+// Separate tracks for Daily Beats
+const dailyBeats = [
+  { id: "1", title: "Binding Lights", artist: "The Weekend", image: require("../../assets/images/TheWeekend.jpg"), genre: "Synthwave" },
+  { id: "2", title: "Watermelon Sugar", artist: "Harry Styles", image: require("../../assets/images/harrystyles.jpg"), genre: "Chillhop" },
+  { id: "3", title: "Levitating", artist: "Dua Lipa", image: require("../../assets/images/dualipa3.jpg"), genre: "Indie Pop" },
+];
+
+// Separate tracks for Fresh Finds
+const freshFinds = [
+  { id: "4", title: "Thank U, Next", artist: "Ariana Grande", image: require("../../assets/images/arianagrande.jpg"), genre: "Synthpop" },
+  { id: "5", title: "Shape of U", artist: "Ed Sheeran", image: require("../../assets/images/edsheeran.jpg"), genre: "Pop Rock" },
+  { id: "6", title: "Espresso", artist: "Sabrina Carpenter", image: require("../../assets/images/sabrina.jpg"), genre: "Pop Punk" },
 ];
 
 const Home = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.sectionTitle}>Your Daily Beats</Text>
-      {tracks.map((item) => (
+      {dailyBeats.map((item) => (
         <TouchableOpacity key={item.id} style={styles.trackItem}>
           <Image source={item.image} style={styles.thumb} />
           <View style={{ flex: 1 }}>
@@ -25,7 +33,7 @@ const Home = () => {
       <Text style={[styles.sectionTitle, { marginTop: 25 }]}>Fresh Finds</Text>
       <FlatList
         horizontal
-        data={tracks}
+        data={freshFinds}
         renderItem={({ item }) => (
           <TouchableOpacity style={styles.card}>
             <Image source={item.image} style={styles.image} />
