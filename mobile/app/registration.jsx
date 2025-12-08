@@ -7,7 +7,7 @@ const Registration = () => {
   const router = useRouter();
 
   const [username, setUsername] = useState("");
-  const [email, setEmail]       = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [referralCode, setReferralCode] = useState("");
@@ -43,7 +43,7 @@ const Registration = () => {
     }
 
     try {
-      const res = await fetch("http://192.168.18.2:3000/api/auth/register", {
+      const res = await fetch("http://192.168.1.10:3000/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -71,7 +71,7 @@ const Registration = () => {
 
   return (
     <View style={styles.container}>
-      
+
       <View style={styles.logoWrapper}>
         <Image
           source={require('../assets/images/imageReg1.png')}
@@ -122,10 +122,10 @@ const Registration = () => {
           onChangeText={setPassword}
         />
         <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-          <FontAwesome 
-            name={showPassword ? "eye" : "eye-slash"} 
-            size={20} 
-            color="#aaa" 
+          <FontAwesome
+            name={showPassword ? "eye" : "eye-slash"}
+            size={20}
+            color="#aaa"
           />
         </TouchableOpacity>
       </View>
@@ -142,10 +142,10 @@ const Registration = () => {
           onChangeText={setConfirmPassword}
         />
         <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)}>
-          <FontAwesome 
-            name={showConfirmPassword ? "eye" : "eye-slash"} 
-            size={20} 
-            color="#aaa" 
+          <FontAwesome
+            name={showConfirmPassword ? "eye" : "eye-slash"}
+            size={20}
+            color="#aaa"
           />
         </TouchableOpacity>
       </View>
@@ -163,8 +163,8 @@ const Registration = () => {
       </View>
 
       {/* Submit Button */}
-      <TouchableOpacity 
-        style={styles.button} 
+      <TouchableOpacity
+        style={styles.button}
         activeOpacity={0.8}
         onPress={handleRegister}
       >

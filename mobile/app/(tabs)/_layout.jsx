@@ -20,7 +20,7 @@ export default function TabsLayout() {
             paddingTop: 10,
             backgroundColor: "#0B0E14",
             elevation: 0,
-            shadowOpacity: 0,
+            boxShadow: "none",
           },
           tabBarLabelStyle: {
             fontSize: 12,
@@ -124,9 +124,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    shadowColor: "#00FFE0",
-    shadowOpacity: 0.15,
-    shadowRadius: 6,
+    boxShadow: "0px 0px 6px rgba(0, 255, 224, 0.15)",
     elevation: 6,
   },
   info: {

@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Image } from "react-native";
 
 const moods = [
-  { emoji: "😭", label: "Relapse", playlist: "Hugot" }, 
+  { emoji: "😭", label: "Relapse", playlist: "Hugot" },
   { emoji: "🕺", label: "Hataw", playlist: "Party All Night (OPM Pop)" },
   { emoji: "☁️", label: "Senti", playlist: "Acoustic Tadhana" },
-  { emoji: "🤪", label: "Gigil", playlist: "K-Pop/P-Pop Hype" }, 
+  { emoji: "🤪", label: "Gigil", playlist: "K-Pop/P-Pop Hype" },
 ];
 
 const playlistImagePlaceholder = require("../../assets/images/mix1.png");
@@ -60,7 +60,7 @@ export default function VibePicker() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0B0E14", 
+    backgroundColor: "#0B0E14",
     paddingHorizontal: 20,
     paddingTop: 60,
   },
@@ -83,9 +83,9 @@ const styles = StyleSheet.create({
   },
   // --- Mood Tiles ---
   moodTile: {
-    backgroundColor: "#151821", 
-    width: "47.5%", 
-    aspectRatio: 1, 
+    backgroundColor: "#151821",
+    width: "47.5%",
+    aspectRatio: 1,
     borderRadius: 15,
     marginBottom: 15,
     padding: 10,
@@ -93,19 +93,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderWidth: 2,
     borderColor: "transparent",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 3 },
-    shadowRadius: 5,
+    boxShadow: "0px 3px 5px rgba(0, 255, 224, 0.15)",
     elevation: 5,
-    shadowColor: "#00FFE0",
-    shadowOpacity: 0.15,
   },
   selectedMoodTile: {
-    borderColor: "#00FFE0", 
-    backgroundColor: "#252B3B", 
+    borderColor: "#00FFE0",
+    backgroundColor: "#252B3B",
   },
   emoji: {
-    fontSize: 40, 
+    fontSize: 40,
     marginBottom: 8,
   },
   moodLabel: {
@@ -152,10 +148,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     alignSelf: "flex-start",
   },
-  playText: { 
+  playText: {
     color: "#00FFE0",
     fontWeight: "600",
     fontSize: 14,
-    
+
   },
 });

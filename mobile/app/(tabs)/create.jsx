@@ -120,9 +120,7 @@ const styles = StyleSheet.create({
     padding: 20,
     alignItems: "center",
     marginTop: 10,
-    shadowColor: "#00FFE0",
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
+    boxShadow: "0px 0px 8px rgba(0, 255, 224, 0.2)",
     elevation: 5,
   },
   resultTitle: {

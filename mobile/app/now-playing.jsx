@@ -109,9 +109,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginTop: 60,
     marginBottom: 25,
-    shadowColor: "#00FFE0",
-    shadowOpacity: 0.3,
-    shadowRadius: 10,
+    boxShadow: "0px 0px 10px rgba(0, 255, 224, 0.3)",
     elevation: 8,
   },
   albumArt: {
@@ -178,9 +176,7 @@ const styles = StyleSheet.create({
     borderRadius: 40,
     alignItems: "center",
     justifyContent: "center",
-    shadowColor: "#00FFE0",
-    shadowOpacity: 0.4,
-    shadowRadius: 10,
+    boxShadow: "0px 0px 10px rgba(0, 255, 224, 0.4)",
     elevation: 10,
   },
 });
