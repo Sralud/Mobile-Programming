@@ -2,6 +2,7 @@ import { FontAwesome } from '@expo/vector-icons';
 import { Link, useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Login = () => {
   const router = useRouter();
@@ -30,7 +31,10 @@ const Login = () => {
         return;
       }
 
-      // Success
+      // Success - Store User Data
+      await AsyncStorage.setItem("token", data.token);
+      await AsyncStorage.setItem("user", JSON.stringify(data.user));
+
       router.push("/splash");
 
     } catch (error) {
@@ -40,7 +44,7 @@ const Login = () => {
 
   return (
     <View style={styles.container}>
-      
+
       <View style={styles.logoSection}>
         <Image
           source={require('../assets/images/imageIndex1.png')}

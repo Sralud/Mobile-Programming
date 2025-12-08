@@ -1,5 +1,8 @@
-import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView } from "react-native";
-import React from "react";
+import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView, TextInput, ActivityIndicator } from "react-native";
+import React, { useState, useEffect } from "react";
+import { Ionicons } from "@expo/vector-icons";
+import { Audio } from 'expo-av';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const library = [
   { id: "1", title: "One Direction", subtitle: "127 tracks", icon: require("../../assets/images/onedirection.jpg") },
@@ -7,16 +10,89 @@ const library = [
   { id: "3", title: "Drive & Flow", subtitle: "23 tracks", icon: require("../../assets/images/mix3.png") },
 ];
 
-const recentlyPlayed = [
-  { id: "1", title: "City Lights", artist: "Luna Vale", cover: require("../../assets/images/mix1.png") },
-  { id: "2", title: "Riff Off", artist: "Pitch Perfect", cover: require("../../assets/images/pitchperfect.jpg") },
-  { id: "3", title: "Midnight Echo", artist: "Nova Gray", cover: require("../../assets/images/night.jpg") },
-  { id: "4", title: "Summer Bloom", artist: "Sky Nova", cover: require("../../assets/images/bloom.jpg") },
-];
-
 const Library = () => {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [sound, setSound] = useState();
+  const [activePreviewUrl, setActivePreviewUrl] = useState(null);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const loadUser = async () => {
+      try {
+        const userData = await AsyncStorage.getItem("user");
+        if (userData) {
+          setUser(JSON.parse(userData));
+        }
+      } catch (error) {
+        console.log("Error loading user", error);
+      }
+    };
+    loadUser();
+  }, []);
+
+  // Function to search Jamendo API for full songs
+  const searchMusic = async (text) => {
+    setSearchQuery(text);
+    if (text.length > 2) {
+      setLoading(true);
+      try {
+        // Using Jamendo API for full free tracks
+        // We use a public client_id for testing (demo)
+        const response = await fetch(`https://api.jamendo.com/v3.0/tracks/?client_id=c9720322&format=jsonpretty&limit=10&search=${text}`);
+        const data = await response.json();
+        setSearchResults(data.results);
+      } catch (error) {
+        console.log("Error searching music", error);
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      setSearchResults([]);
+    }
+  };
+
+  // Function to play song
+  const playSong = async (audioUrl) => {
+    if (sound) {
+      await sound.unloadAsync();
+    }
+
+    if (activePreviewUrl === audioUrl) {
+      // If tapping the same song, stop it
+      setActivePreviewUrl(null);
+      return;
+    }
+
+    try {
+      const { sound: newSound } = await Audio.Sound.createAsync(
+        { uri: audioUrl },
+        { shouldPlay: true }
+      );
+      setSound(newSound);
+      setActivePreviewUrl(audioUrl);
+
+      newSound.setOnPlaybackStatusUpdate((status) => {
+        if (status.didJustFinish) {
+          setActivePreviewUrl(null);
+        }
+      });
+    } catch (error) {
+      console.log("Error playing sound", error);
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      if (sound) {
+        sound.unloadAsync();
+      }
+    };
+  }, [sound]);
+
   return (
-    <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 70 }}>
+    <View style={styles.container}>
       {/* Profile Header */}
       <View style={styles.header}>
         <Image
@@ -25,43 +101,70 @@ const Library = () => {
         />
         <View>
           <Text style={styles.welcome}>Welcome Back,</Text>
-          <Text style={styles.username}>Rhoii 🎵</Text>
+          <Text style={styles.username}>{user?.username || "Guest User"} 🎵</Text>
         </View>
       </View>
 
-      {/* Your Sound Archive */}
-      <Text style={styles.sectionTitle}>Your Sound Archive</Text>
+      {/* Search Bar */}
+      <View style={styles.searchContainer}>
+        <Ionicons name="search" size={20} color="#666" style={{ marginRight: 10 }} />
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Search songs, artists..."
+          placeholderTextColor="#666"
+          value={searchQuery}
+          onChangeText={searchMusic}
+        />
+        {loading && <ActivityIndicator size="small" color="#00FFE0" />}
+      </View>
 
-      {library.map((item) => (
-        <TouchableOpacity key={item.id} style={styles.libItem} activeOpacity={0.85}>
-          <Image source={item.icon} style={styles.thumb} />
-          <View style={styles.info}>
-            <Text style={styles.title}>{item.title}</Text>
-            <Text style={styles.subtitle}>{item.subtitle}</Text>
+
+      <ScrollView contentContainerStyle={{ paddingBottom: 100 }} showsVerticalScrollIndicator={false}>
+
+        {/* Search Results */}
+        {searchResults.length > 0 ? (
+          <View>
+            <Text style={styles.sectionTitle}>Search Results</Text>
+            {searchResults.map((item) => (
+              <TouchableOpacity
+                key={item.id}
+                style={styles.resultItem}
+                onPress={() => playSong(item.audio)}
+              >
+                <Image source={{ uri: item.image }} style={styles.thumb} />
+                <View style={styles.info}>
+                  <Text style={styles.title} numberOfLines={1}>{item.name}</Text>
+                  <Text style={styles.subtitle}>{item.artist_name}</Text>
+                </View>
+                <Ionicons
+                  name={activePreviewUrl === item.audio ? "pause-circle" : "play-circle"}
+                  size={32}
+                  color="#00FFE0"
+                />
+              </TouchableOpacity>
+            ))}
           </View>
-          <View style={styles.tagContainer}>
-            <Text style={styles.tag}>Playlist</Text>
-          </View>
-        </TouchableOpacity>
-      ))}
+        ) : (
+          <>
+            {/* Your Sound Archive */}
+            <Text style={styles.sectionTitle}>Your Sound Archive</Text>
 
-      {/* Recently Played */}
-      <Text style={[styles.sectionTitle, { marginTop: 0.5}]}>Recently Played</Text>
-
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.recentScroll}
-      >
-        {recentlyPlayed.map((song) => (
-          <TouchableOpacity key={song.id} style={styles.recentCard} activeOpacity={0.85}>
-            <Image source={song.cover} style={styles.recentCover} />
-            <Text style={styles.songTitle}>{song.title}</Text>
-            <Text style={styles.songArtist}>{song.artist}</Text>
-          </TouchableOpacity>
-        ))}
+            {library.map((item) => (
+              <TouchableOpacity key={item.id} style={styles.libItem} activeOpacity={0.85}>
+                <Image source={item.icon} style={styles.thumb} />
+                <View style={styles.info}>
+                  <Text style={styles.title}>{item.title}</Text>
+                  <Text style={styles.subtitle}>{item.subtitle}</Text>
+                </View>
+                <View style={styles.tagContainer}>
+                  <Text style={styles.tag}>Playlist</Text>
+                </View>
+              </TouchableOpacity>
+            ))}
+          </>
+        )}
       </ScrollView>
-    </ScrollView>
+    </View>
   );
 };
 
@@ -73,6 +176,29 @@ const styles = StyleSheet.create({
     backgroundColor: "#0B0E14",
     paddingHorizontal: 20,
     paddingTop: 50,
+  },
+  searchContainer: {
+    flexDirection: "row",
+    backgroundColor: "#151821",
+    borderRadius: 12,
+    padding: 12,
+    alignItems: "center",
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: "#333",
+  },
+  searchInput: {
+    flex: 1,
+    color: "#fff",
+    fontSize: 16,
+  },
+  resultItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#151821",
+    marginBottom: 10,
+    borderRadius: 12,
+    padding: 10,
   },
 
   // Header Section
@@ -151,42 +277,5 @@ const styles = StyleSheet.create({
     color: "#00FFE0",
     fontSize: 12,
     fontWeight: "600",
-  },
-
-  // Recently Played Section
-  recentScroll: {
-    paddingLeft: 2,
-    paddingRight: 20,
-    paddingBottom: 40,
-    gap: 18,
-  },
-  recentCard: {
-    width: 130,
-    backgroundColor: "#151821",
-    borderRadius: 18,
-    padding: 20,
-    alignItems: "center",
-    shadowColor: "#00FFE0",
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4,
-  },
-  recentCover: {
-    width: 100,
-    height: 100,
-    borderRadius: 14,
-    marginBottom: 10,
-  },
-  songTitle: {
-    color: "#FFFFFF",
-    fontWeight: "600",
-    fontSize: 14,
-    textAlign: "center",
-  },
-  songArtist: {
-    color: "#00FFE0",
-    fontSize: 12,
-    textAlign: "center",
-    marginTop: 2,
   },
 });

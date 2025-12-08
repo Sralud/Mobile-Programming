@@ -49,20 +49,20 @@ export default function TabsLayout() {
           }}
         />
         <Tabs.Screen
-          name="search"
-          options={{
-            title: "Search",
-            tabBarIcon: ({ color, size }) => (
-              <Ionicons name="search-outline" size={size} color={color} />
-            ),
-          }}
-        />
-        <Tabs.Screen
           name="library"
           options={{
             title: "Library",
             tabBarIcon: ({ color, size }) => (
               <Ionicons name="library-outline" size={size} color={color} />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="create"
+          options={{
+            title: "Create",
+            tabBarIcon: ({ color, size }) => (
+              <Ionicons name="sparkles-outline" size={size} color={color} />
             ),
           }}
         />
@@ -76,11 +76,11 @@ export default function TabsLayout() {
           }}
         />
         <Tabs.Screen
-          name="create"
+          name="profile"
           options={{
-            title: "Create",
+            title: "Profile",
             tabBarIcon: ({ color, size }) => (
-              <Ionicons name="sparkles-outline" size={size} color={color} />
+              <FontAwesome name="user-o" size={size} color={color} />
             ),
           }}
         />
