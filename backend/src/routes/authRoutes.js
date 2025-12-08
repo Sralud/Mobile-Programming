@@ -1,94 +1,105 @@
 import express from "express";
 import User from "../models/User.js";
-import jwt from "jsonwebtoken";  
+import jwt from "jsonwebtoken";
 
 const router = express.Router();
-const generateToken = (userID) => {
-    return jwt.sign({userID}, process.env.JWT_SECRET, {expiresIn: "15d"})
-}
 
+const generateToken = (userID) => {
+    return jwt.sign({ userID }, process.env.JWT_SECRET, { expiresIn: "15d" });
+};
+
+// ====================== REGISTER ======================
 router.post("/register", async (req, res) => {
-    //res.send("register");
     try {
         const { username, email, password } = req.body;
-        
-        if(!username || !email || !password) {
+
+        // Basic frontend validation
+        if (!username || !email || !password)
             return res.status(400).json({ message: "All fields are required" });
-        }
 
-        if(password.length < 6) {
-            return res.status(400).json({ message: "Password must be at least 6 characters long" });
-        }
+        if (!email.includes("@"))
+            return res.status(400).json({ message: "Invalid email format" });
 
-        if(username.length < 6) {
-            return res.status(400).json({ message: "Username must be at least 6 characters long" });
-        }
+        if (password.length < 6)
+            return res.status(400).json({ message: "Password must be 6+ characters" });
 
-        const existingEmail = await User.findOne({ email });
-        if (existingEmail) {
+        if (username.length < 3)
+            return res.status(400).json({ message: "Username must be at least 3 characters long" });
+
+        // Check duplicates
+        const emailExists = await User.findOne({ email });
+        if (emailExists)
             return res.status(400).json({ message: "Email already in use" });
-        }
 
-        const existingUsername = await User.findOne({ username });
-        if (existingUsername) {
+        const usernameExists = await User.findOne({ username });
+        if (usernameExists)
             return res.status(400).json({ message: "Username already in use" });
-        }
 
-        const profileImage = `https://api.dicebear.com/9.x/adventurer-neutral/svg?seed=${username}`;
+        const profileImage =
+            `https://api.dicebear.com/9.x/adventurer-neutral/svg?seed=${username}`;
 
-        const user = new User({ 
+        const newUser = new User({
             username,
             email,
             password,
-            profileImage, 
+            profileImage
         });
 
-        await user.save();
+        await newUser.save();
 
-        const token = generateToken(user._id);
+        const token = generateToken(newUser._id);
+
         res.status(201).json({
+            message: "Account created successfully!",
             token,
-            user:{
-                _id:user._id,
-                username: user.username,
-                email: user.email
+            user: {
+                id: newUser._id,
+                username: newUser.username,
+                email: newUser.email,
             }
-        })
+        });
 
     } catch (error) {
-        console.log("Error in register route", error);
-        return res.status(500).json({ message: "Internal Server Error" });
+        console.log("Register Error:", error);
+        res.status(500).json({ message: "Server Error" });
     }
 });
 
+// ====================== LOGIN ======================
 router.post("/login", async (req, res) => {
     try {
         const { email, password } = req.body;
 
-        if (!email || !password) return res.status(400).json({ message: "All fields are required"});
+        if (!email || !password)
+            return res.status(400).json({ message: "All fields are required" });
 
-        const user = await User.findOne( { email } );
-        if(!user) return res.status(400).json({message: "Invalid Credentials"});
+        if (!email.includes("@"))
+            return res.status(400).json({ message: "Invalid email address" });
 
-        const isPasswordCorrect = await user.comparePassword(password); 
-        if(!isPasswordCorrect) return res.status(400).json({message: "Invalid Credentials"}); 
+        const user = await User.findOne({ email });
+        if (!user)
+            return res.status(400).json({ message: "Invalid credentials" });
+
+        const isMatch = await user.comparePassword(password);
+        if (!isMatch)
+            return res.status(400).json({ message: "Invalid credentials" });
 
         const token = generateToken(user._id);
-        res.status(201).json({
+
+        res.status(200).json({
+            message: "Login successful!",
             token,
-            user:{
-                _id: user._id,
+            user: {
+                id: user._id,
                 username: user.username,
                 email: user.email
             }
-        })
+        });
 
     } catch (error) {
-        console.log("Error in login route", error);
-        return res.status(500).json({ message: "Internal Server Error" });
+        console.log("Login Error:", error);
+        res.status(500).json({ message: "Server Error" });
     }
 });
-
-
 
 export default router;

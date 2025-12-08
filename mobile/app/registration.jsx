@@ -5,12 +5,73 @@ import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'reac
 
 const Registration = () => {
   const router = useRouter();
+
+  const [username, setUsername] = useState("");
+  const [email, setEmail]       = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [referralCode, setReferralCode] = useState("");
+
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+  const handleRegister = async () => {
+    // FRONTEND VALIDATION  
+    if (!username || !email || !password || !confirmPassword) {
+      alert("All fields except referral code are required.");
+      return;
+    }
+
+    if (!email.includes("@")) {
+      alert("Please enter a valid email address.");
+      return;
+    }
+
+    if (password.length < 6) {
+      alert("Password must be at least 6 characters.");
+      return;
+    }
+
+    if (username.length < 3) {
+      alert("Username must be at least 3 characters long.");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      alert("Passwords do not match.");
+      return;
+    }
+
+    try {
+      const res = await fetch("http://192.168.18.2:3000/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username,
+          email,
+          password,
+        })
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.message);
+        return;
+      }
+
+      alert("Account created successfully!");
+      router.push("/");
+
+    } catch (error) {
+      alert("Server error. Please try again.");
+      console.log("Registration error:", error);
+    }
+  };
+
   return (
     <View style={styles.container}>
-
+      
       <View style={styles.logoWrapper}>
         <Image
           source={require('../assets/images/imageReg1.png')}
@@ -20,20 +81,22 @@ const Registration = () => {
       </View>
 
       <View style={styles.logoRow}>
-        <Text style={styles.logo}>
-          <Text style={styles.logoMint}>Rhevo</Text>
-        </Text>
+        <Text style={styles.logo}>Rhevo</Text>
       </View>
 
+      {/* Username */}
       <View style={styles.inputWrapper}>
         <FontAwesome name="user" size={20} color="#aaa" style={styles.icon} />
         <TextInput
           style={styles.input}
           placeholder="Full Name"
           placeholderTextColor="#aaa"
+          value={username}
+          onChangeText={setUsername}
         />
       </View>
 
+      {/* Email */}
       <View style={styles.inputWrapper}>
         <FontAwesome name="envelope" size={20} color="#aaa" style={styles.icon} />
         <TextInput
@@ -42,9 +105,12 @@ const Registration = () => {
           placeholderTextColor="#aaa"
           keyboardType="email-address"
           autoCapitalize="none"
+          value={email}
+          onChangeText={setEmail}
         />
       </View>
 
+      {/* Password */}
       <View style={styles.inputWrapper}>
         <FontAwesome name="key" size={20} color="#aaa" style={styles.icon} />
         <TextInput
@@ -52,16 +118,19 @@ const Registration = () => {
           placeholder="Password"
           placeholderTextColor="#aaa"
           secureTextEntry={!showPassword}
+          value={password}
+          onChangeText={setPassword}
         />
         <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-          <FontAwesome
-            name={showPassword ? 'eye' : 'eye-slash'}
-            size={20}
-            color="#aaa"
+          <FontAwesome 
+            name={showPassword ? "eye" : "eye-slash"} 
+            size={20} 
+            color="#aaa" 
           />
         </TouchableOpacity>
       </View>
 
+      {/* Confirm Password */}
       <View style={styles.inputWrapper}>
         <FontAwesome name="key" size={20} color="#aaa" style={styles.icon} />
         <TextInput
@@ -69,34 +138,43 @@ const Registration = () => {
           placeholder="Confirm Password"
           placeholderTextColor="#aaa"
           secureTextEntry={!showConfirmPassword}
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
         />
         <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)}>
-          <FontAwesome
-            name={showConfirmPassword ? 'eye' : 'eye-slash'}
-            size={20}
-            color="#aaa"
+          <FontAwesome 
+            name={showConfirmPassword ? "eye" : "eye-slash"} 
+            size={20} 
+            color="#aaa" 
           />
         </TouchableOpacity>
       </View>
 
+      {/* Referral Code */}
       <View style={styles.inputWrapper}>
         <FontAwesome name="gift" size={20} color="#aaa" style={styles.icon} />
         <TextInput
           style={styles.input}
           placeholder="Referral Code (Optional)"
           placeholderTextColor="#aaa"
+          value={referralCode}
+          onChangeText={setReferralCode}
         />
       </View>
 
-      <TouchableOpacity style={styles.button} activeOpacity={0.8}>
+      {/* Submit Button */}
+      <TouchableOpacity 
+        style={styles.button} 
+        activeOpacity={0.8}
+        onPress={handleRegister}
+      >
         <Text style={styles.buttonText}>Sign Up</Text>
       </TouchableOpacity>
 
+      {/* Back to Login */}
       <Text style={styles.loginText}>
         Already have an account?{" "}
-        <Link href="/" style={styles.loginLink}>
-          Login
-        </Link>
+        <Link href="/" style={styles.loginLink}>Login</Link>
       </Text>
 
     </View>
@@ -112,16 +190,15 @@ const styles = StyleSheet.create({
   },
   logoWrapper: {
     alignItems: 'center',
-    marginBottom: 1,
+    marginBottom: 10,
   },
   logoImage: {
     width: 150,
     height: 150,
   },
   logoRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'center',
+    flexDirection: 'row',
     marginBottom: 20,
   },
   logo: {
@@ -135,7 +212,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#222',
     borderRadius: 8,
     paddingHorizontal: 10,
-    padding: 6,
+    paddingVertical: 6,
     marginBottom: 12,
   },
   icon: {
