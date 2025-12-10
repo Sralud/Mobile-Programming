@@ -1,9 +1,11 @@
 import { Ionicons, FontAwesome } from "@expo/vector-icons";
 import { Tabs, useRouter } from "expo-router";
 import { Pressable, View, Text, TouchableOpacity, StyleSheet, Image, } from "react-native";
+import { usePlayer } from "../contexts/PlayerContext";
 
 export default function TabsLayout() {
   const router = useRouter();
+  const { currentTrack } = usePlayer();
 
   return (
     <>
@@ -86,27 +88,44 @@ export default function TabsLayout() {
         />
       </Tabs>
 
-      {/*Floating Mini Music Player*/}
-      <TouchableOpacity
-        style={styles.miniPlayer}
-        activeOpacity={0.9}
-        onPress={() => router.push("/now-playing")}
-      >
-        <View style={styles.info}>
-          {/* Small album art*/}
-          <Image
-            source={require("../../assets/images/imageIndex1.png")}
-            style={styles.albumArt}
-          />
+      {/*Floating Mini Music Player - Only show when there's a current track*/}
+      {currentTrack && (
+        <TouchableOpacity
+          style={styles.miniPlayer}
+          activeOpacity={0.9}
+          onPress={() => router.push({
+            pathname: "/now-playing",
+            params: {
+              id: currentTrack.id,
+              title: currentTrack.title,
+              artist: currentTrack.artist,
+              image: currentTrack.image,
+              audioUrl: currentTrack.audioUrl
+            }
+          })}
+        >
+          <View style={styles.info}>
+            {/* Small album art*/}
+            {currentTrack.image ? (
+              <Image
+                source={{ uri: currentTrack.image }}
+                style={styles.albumArt}
+              />
+            ) : (
+              <View style={[styles.albumArt, { backgroundColor: "#1F2330", justifyContent: "center", alignItems: "center" }]}>
+                <Ionicons name="musical-notes" size={20} color="#00FFE0" />
+              </View>
+            )}
 
-          <View style={{ flex: 1 }}>
-            <Text style={styles.title}>18</Text>
-            <Text style={styles.artist}>One Direction</Text>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.title} numberOfLines={1}>{currentTrack.title}</Text>
+              <Text style={styles.artist} numberOfLines={1}>{currentTrack.artist}</Text>
+            </View>
           </View>
-        </View>
 
-        <Ionicons name="play" size={28} color="#00FFE0" />
-      </TouchableOpacity>
+          <Ionicons name="play" size={28} color="#00FFE0" />
+        </TouchableOpacity>
+      )}
     </>
   );
 }
