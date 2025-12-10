@@ -1,18 +1,118 @@
-import React, { useState } from "react";
-import { View, Text, StyleSheet, Image, TouchableOpacity, } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
+import { useRouter, useLocalSearchParams } from "expo-router";
+import { useFocusEffect } from '@react-navigation/native';
+import { Audio } from 'expo-av';
 
 export default function NowPlaying() {
-  const [isPlaying, setIsPlaying] = useState(true);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [sound, setSound] = useState();
+  const [position, setPosition] = useState(0);
+  const [duration, setDuration] = useState(0);
   const router = useRouter();
+  const params = useLocalSearchParams();
+
+  // Extract track data from params
+  const track = {
+    id: params.id,
+    title: params.title || "Unknown Track",
+    artist: params.artist || "Unknown Artist",
+    image: params.image,
+    audioUrl: params.audioUrl
+  };
+
+  // Debug: Log the received params
+  console.log("Now Playing - Received params:", params);
+  console.log("Now Playing - Track object:", track);
+
+  // Load and play audio when component mounts
+  useEffect(() => {
+    loadAudio();
+    return () => {
+      if (sound) {
+        sound.unloadAsync();
+      }
+    };
+  }, []);
+
+  // Stop audio when leaving this screen
+  useFocusEffect(
+    React.useCallback(() => {
+      return () => {
+        if (sound) {
+          sound.stopAsync().catch(() => { });
+          sound.unloadAsync().catch(() => { });
+        }
+      };
+    }, [sound])
+  );
+
+  const loadAudio = async () => {
+    try {
+      // Check if audioUrl exists before attempting to load
+      if (!track.audioUrl) {
+        console.log("No audio URL provided");
+        return;
+      }
+
+      const { sound: newSound } = await Audio.Sound.createAsync(
+        { uri: track.audioUrl },
+        { shouldPlay: true },
+        onPlaybackStatusUpdate
+      );
+      setSound(newSound);
+      setIsPlaying(true);
+    } catch (error) {
+      console.log("Error loading audio:", error);
+    }
+  };
+
+  const onPlaybackStatusUpdate = (status) => {
+    if (status.isLoaded) {
+      setPosition(status.positionMillis);
+      setDuration(status.durationMillis);
+      setIsPlaying(status.isPlaying);
+
+      if (status.didJustFinish) {
+        setIsPlaying(false);
+        setPosition(0);
+      }
+    }
+  };
+
+  const togglePlayPause = async () => {
+    if (!sound) return;
+
+    try {
+      if (isPlaying) {
+        await sound.pauseAsync();
+      } else {
+        await sound.playAsync();
+      }
+    } catch (error) {
+      console.log("Error toggling playback:", error);
+    }
+  };
+
+  const formatTime = (millis) => {
+    const totalSeconds = Math.floor(millis / 1000);
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+  };
+
+  const progressPercentage = duration > 0 ? (position / duration) * 100 : 0;
 
   return (
     <View style={styles.container}>
       {/*Collapse Button */}
       <TouchableOpacity
         style={styles.closeButton}
-        onPress={() => router.back()}
+        onPress={() => {
+          if (sound) sound.unloadAsync().catch(() => { });
+          router.back();
+        }}
         activeOpacity={0.8}
       >
         <Ionicons name="chevron-down" size={28} color="#00FFE0" />
@@ -20,27 +120,33 @@ export default function NowPlaying() {
 
       {/* 🎵 Album Art */}
       <View style={styles.artContainer}>
-        <Image
-          source={require("../assets/images/onedirection.jpg")}
-          style={styles.albumArt}
-          resizeMode="cover" // ensures it fills perfectly without overlap
-        />
+        {track.image ? (
+          <Image
+            source={{ uri: track.image }}
+            style={styles.albumArt}
+            resizeMode="cover"
+          />
+        ) : (
+          <View style={styles.placeholderArt}>
+            <Ionicons name="musical-notes" size={80} color="#00FFE0" />
+          </View>
+        )}
       </View>
 
       {/* Song Info */}
       <View style={styles.infoContainer}>
-        <Text style={styles.title}>18</Text>
-        <Text style={styles.artist}>One Direction</Text>
+        <Text style={styles.title} numberOfLines={1}>{track.title}</Text>
+        <Text style={styles.artist} numberOfLines={1}>{track.artist}</Text>
       </View>
 
       {/* Progress Bar */}
       <View style={styles.progressContainer}>
         <View style={styles.progressBarBackground}>
-          <View style={[styles.progressBarFill, { width: "45%" }]} />
+          <View style={[styles.progressBarFill, { width: `${progressPercentage}%` }]} />
         </View>
         <View style={styles.timeRow}>
-          <Text style={styles.time}>1:25</Text>
-          <Text style={styles.time}>3:20</Text>
+          <Text style={styles.time}>{formatTime(position)}</Text>
+          <Text style={styles.time}>{formatTime(duration)}</Text>
         </View>
 
         {/* Bottom Options */}
@@ -65,7 +171,7 @@ export default function NowPlaying() {
 
         <TouchableOpacity
           style={styles.playButton}
-          onPress={() => setIsPlaying(!isPlaying)}
+          onPress={togglePlayPause}
         >
           <Ionicons
             name={isPlaying ? "pause" : "play"}
@@ -115,6 +221,13 @@ const styles = StyleSheet.create({
   albumArt: {
     width: "100%",
     height: "90%",
+  },
+  placeholderArt: {
+    width: "100%",
+    height: "100%",
+    backgroundColor: "#1F2330",
+    justifyContent: "center",
+    alignItems: "center",
   },
   infoContainer: {
     alignItems: "center",

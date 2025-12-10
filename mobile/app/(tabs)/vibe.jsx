@@ -1,17 +1,84 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Image } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, FlatList } from "react-native";
+import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from "expo-router";
+import { usePlayer } from '../contexts/PlayerContext';
 
 const moods = [
-  { emoji: "😭", label: "Relapse", playlist: "Hugot" },
-  { emoji: "🕺", label: "Hataw", playlist: "Party All Night (OPM Pop)" },
-  { emoji: "☁️", label: "Senti", playlist: "Acoustic Tadhana" },
-  { emoji: "🤪", label: "Gigil", playlist: "K-Pop/P-Pop Hype" },
+  {
+    id: 1,
+    emoji: "😭",
+    label: "Relapse",
+    description: "Sad girl/boy hours",
+    color: "#FF4444",
+    tracks: [
+      { id: 'r1', title: "Kathang Isip", artist: "Ben&Ben", duration: "5:18", image: "https://e-cdns-images.dzcdn.net/images/cover/d1b73791d0bf52e05c5de6a8e0e36c5f/250x250-000000-80-0-0.jpg", audioUrl: "https://cdns-preview-2.dzcdn.net/stream/c-2e7f0f0b0f0f0f0f0f0f0f0f0f0f0f0f-8.mp3" },
+      { id: 'r2', title: "Kung 'Di Rin Lang Ikaw", artist: "December Avenue", duration: "4:28", image: "https://e-cdns-images.dzcdn.net/images/cover/d1b73791d0bf52e05c5de6a8e0e36c5f/250x250-000000-80-0-0.jpg", audioUrl: "https://cdns-preview-2.dzcdn.net/stream/c-2e7f0f0b0f0f0f0f0f0f0f0f0f0f0f0f-8.mp3" },
+      { id: 'r3', title: "Malaya", artist: "Moira Dela Torre", duration: "4:15", image: "https://e-cdns-images.dzcdn.net/images/cover/d1b73791d0bf52e05c5de6a8e0e36c5f/250x250-000000-80-0-0.jpg", audioUrl: "https://cdns-preview-2.dzcdn.net/stream/c-2e7f0f0b0f0f0f0f0f0f0f0f0f0f0f0f-8.mp3" },
+      { id: 'r4', title: "Tadhana", artist: "Up Dharma Down", duration: "3:56", image: "https://e-cdns-images.dzcdn.net/images/cover/d1b73791d0bf52e05c5de6a8e0e36c5f/250x250-000000-80-0-0.jpg", audioUrl: "https://cdns-preview-2.dzcdn.net/stream/c-2e7f0f0b0f0f0f0f0f0f0f0f0f0f0f0f-8.mp3" },
+    ]
+  },
+  {
+    id: 2,
+    emoji: "🕺",
+    label: "Slay Mode",
+    description: "Main character energy, let's go!",
+    color: "#FF00FF",
+    tracks: [
+      { id: 'h1', title: "Tala", artist: "Sarah Geronimo", duration: "3:45", image: "https://e-cdns-images.dzcdn.net/images/cover/d1b73791d0bf52e05c5de6a8e0e36c5f/250x250-000000-80-0-0.jpg", audioUrl: "https://cdns-preview-2.dzcdn.net/stream/c-2e7f0f0b0f0f0f0f0f0f0f0f0f0f0f0f-8.mp3" },
+      { id: 'h2', title: "Gento", artist: "SB19", duration: "3:30", image: "https://e-cdns-images.dzcdn.net/images/cover/d1b73791d0bf52e05c5de6a8e0e36c5f/250x250-000000-80-0-0.jpg", audioUrl: "https://cdns-preview-2.dzcdn.net/stream/c-2e7f0f0b0f0f0f0f0f0f0f0f0f0f0f0f-8.mp3" },
+      { id: 'h3', title: "Pantropiko", artist: "BINI", duration: "3:20", image: "https://e-cdns-images.dzcdn.net/images/cover/d1b73791d0bf52e05c5de6a8e0e36c5f/250x250-000000-80-0-0.jpg", audioUrl: "https://cdns-preview-2.dzcdn.net/stream/c-2e7f0f0b0f0f0f0f0f0f0f0f0f0f0f0f-8.mp3" },
+      { id: 'h4', title: "Salamin Salamin", artist: "BINI", duration: "3:15", image: "https://e-cdns-images.dzcdn.net/images/cover/d1b73791d0bf52e05c5de6a8e0e36c5f/250x250-000000-80-0-0.jpg", audioUrl: "https://cdns-preview-2.dzcdn.net/stream/c-2e7f0f0b0f0f0f0f0f0f0f0f0f0f0f0f-8.mp3" },
+    ]
+  },
+  {
+    id: 3,
+    emoji: "☁️",
+    label: "Chill",
+    description: "Walang stress, good vibes only",
+    color: "#00FFE0",
+    tracks: [
+      { id: 's1', title: "Binibini", artist: "Zack Tabudlo", duration: "3:40", image: "https://e-cdns-images.dzcdn.net/images/cover/d1b73791d0bf52e05c5de6a8e0e36c5f/250x250-000000-80-0-0.jpg", audioUrl: "https://cdns-preview-2.dzcdn.net/stream/c-2e7f0f0b0f0f0f0f0f0f0f0f0f0f0f0f-8.mp3" },
+      { id: 's2', title: "Higa", artist: "Arthur Nery", duration: "4:05", image: "https://e-cdns-images.dzcdn.net/images/cover/d1b73791d0bf52e05c5de6a8e0e36c5f/250x250-000000-80-0-0.jpg", audioUrl: "https://cdns-preview-2.dzcdn.net/stream/c-2e7f0f0b0f0f0f0f0f0f0f0f0f0f0f0f-8.mp3" },
+      { id: 's3', title: "Sining", artist: "Dionela", duration: "3:55", image: "https://e-cdns-images.dzcdn.net/images/cover/d1b73791d0bf52e05c5de6a8e0e36c5f/250x250-000000-80-0-0.jpg", audioUrl: "https://cdns-preview-2.dzcdn.net/stream/c-2e7f0f0b0f0f0f0f0f0f0f0f0f0f0f0f-8.mp3" },
+      { id: 's4', title: "Mundo", artist: "IV of Spades", duration: "4:20", image: "https://e-cdns-images.dzcdn.net/images/cover/d1b73791d0bf52e05c5de6a8e0e36c5f/250x250-000000-80-0-0.jpg", audioUrl: "https://cdns-preview-2.dzcdn.net/stream/c-2e7f0f0b0f0f0f0f0f0f0f0f0f0f0f0f-8.mp3" },
+    ]
+  },
+  {
+    id: 4,
+    emoji: "🔥",
+    label: "Hype Beast",
+    description: "Energy 100%, no cap fr fr",
+    color: "#FFFF00",
+    tracks: [
+      { id: 'g1', title: "Harana", artist: "Parokya ni Edgar", duration: "4:30", image: "https://e-cdns-images.dzcdn.net/images/cover/d1b73791d0bf52e05c5de6a8e0e36c5f/250x250-000000-80-0-0.jpg", audioUrl: "https://cdns-preview-2.dzcdn.net/stream/c-2e7f0f0b0f0f0f0f0f0f0f0f0f0f0f0f-8.mp3" },
+      { id: 'g2', title: "Narda", artist: "Kamikazee", duration: "3:50", image: "https://e-cdns-images.dzcdn.net/images/cover/d1b73791d0bf52e05c5de6a8e0e36c5f/250x250-000000-80-0-0.jpg", audioUrl: "https://cdns-preview-2.dzcdn.net/stream/c-2e7f0f0b0f0f0f0f0f0f0f0f0f0f0f0f-8.mp3" },
+      { id: 'g3', title: "Huling Sayaw", artist: "Kamikazee", duration: "4:45", image: "https://e-cdns-images.dzcdn.net/images/cover/d1b73791d0bf52e05c5de6a8e0e36c5f/250x250-000000-80-0-0.jpg", audioUrl: "https://cdns-preview-2.dzcdn.net/stream/c-2e7f0f0b0f0f0f0f0f0f0f0f0f0f0f0f-8.mp3" },
+      { id: 'g4', title: "Elesi", artist: "Rivermaya", duration: "4:15", image: "https://e-cdns-images.dzcdn.net/images/cover/d1b73791d0bf52e05c5de6a8e0e36c5f/250x250-000000-80-0-0.jpg", audioUrl: "https://cdns-preview-2.dzcdn.net/stream/c-2e7f0f0b0f0f0f0f0f0f0f0f0f0f0f0f-8.mp3" },
+    ]
+  },
 ];
 
 const playlistImagePlaceholder = require("../../assets/images/mix1.png");
 
 export default function VibePicker() {
+  const router = useRouter();
+  const { setCurrentTrack } = usePlayer();
   const [selectedMood, setSelectedMood] = useState(null);
+
+  const playTrack = (track) => {
+    setCurrentTrack(track);
+    router.push({
+      pathname: "/now-playing",
+      params: {
+        id: track.id,
+        title: track.title,
+        artist: track.artist,
+        image: track.image,
+        audioUrl: track.audioUrl
+      }
+    });
+  };
 
   return (
     <View style={styles.container}>
@@ -19,12 +86,12 @@ export default function VibePicker() {
       <Text style={styles.subtitle}>Anong trip mo? Pick your vibe to match your soundtrack.</Text>
 
       <ScrollView contentContainerStyle={styles.moodGrid} showsVerticalScrollIndicator={false}>
-        {moods.map((mood, index) => (
+        {moods.map((mood) => (
           <TouchableOpacity
-            key={index}
+            key={mood.id}
             style={[
               styles.moodTile,
-              selectedMood?.label === mood.label && styles.selectedMoodTile,
+              selectedMood?.id === mood.id && styles.selectedMoodTile,
             ]}
             onPress={() => setSelectedMood(mood)}
             activeOpacity={0.7}
@@ -34,21 +101,43 @@ export default function VibePicker() {
           </TouchableOpacity>
         ))}
 
-        {/* Dynamic Result Card */}
+        {/* Dynamic Result Card with Track List */}
         {selectedMood && (
           <View style={styles.resultCard}>
-            <Image
-              source={playlistImagePlaceholder}
-              style={styles.playlistArt}
-            />
-            <View style={styles.resultInfo}>
-              <Text style={styles.cardTitle}>{selectedMood.playlist}</Text>
-              <Text style={styles.cardSubtitle}>
-                Perfect for your **{selectedMood.label}** mood, idol!
-              </Text>
-              <TouchableOpacity style={styles.playButton} activeOpacity={0.8}>
-                <Text style={styles.playText}>Let's Listen!</Text>
-              </TouchableOpacity>
+            <View style={styles.cardHeader}>
+              <Image
+                source={playlistImagePlaceholder}
+                style={styles.playlistArt}
+              />
+              <View style={styles.resultInfo}>
+                <Text style={styles.cardTitle}>{selectedMood.label} Mix</Text>
+                <Text style={styles.cardSubtitle}>
+                  {selectedMood.description}
+                </Text>
+                <Text style={styles.trackCount}>{selectedMood.tracks.length} tracks</Text>
+              </View>
+            </View>
+
+            {/* Track List */}
+            <View style={styles.trackList}>
+              {selectedMood.tracks.map((track, index) => (
+                <TouchableOpacity
+                  key={track.id}
+                  style={styles.trackItem}
+                  onPress={() => playTrack(track)}
+                  activeOpacity={0.7}
+                >
+                  <View style={styles.trackNumber}>
+                    <Text style={styles.trackNumberText}>{index + 1}</Text>
+                  </View>
+                  <View style={styles.trackInfo}>
+                    <Text style={styles.trackTitle} numberOfLines={1}>{track.title}</Text>
+                    <Text style={styles.trackArtist} numberOfLines={1}>{track.artist}</Text>
+                  </View>
+                  <Text style={styles.trackDuration}>{track.duration}</Text>
+                  <Ionicons name="play-circle" size={28} color={selectedMood.color} />
+                </TouchableOpacity>
+              ))}
             </View>
           </View>
         )}
@@ -81,7 +170,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingBottom: 40,
   },
-  // --- Mood Tiles ---
   moodTile: {
     backgroundColor: "#151821",
     width: "47.5%",
@@ -93,7 +181,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderWidth: 2,
     borderColor: "transparent",
-    boxShadow: "0px 3px 5px rgba(0, 255, 224, 0.15)",
     elevation: 5,
   },
   selectedMoodTile: {
@@ -109,17 +196,18 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
   },
-  // --- Result Card ---
   resultCard: {
     width: "100%",
     backgroundColor: "#151821",
     borderRadius: 20,
     padding: 20,
     marginTop: 10,
-    flexDirection: "row",
-    alignItems: "center",
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.1)",
+  },
+  cardHeader: {
+    flexDirection: "row",
+    marginBottom: 20,
   },
   playlistArt: {
     width: 80,
@@ -129,29 +217,65 @@ const styles = StyleSheet.create({
   },
   resultInfo: {
     flex: 1,
+    justifyContent: "center",
   },
   cardTitle: {
     color: "#FFF",
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: "700",
     marginBottom: 4,
   },
   cardSubtitle: {
     color: "#A0A0A0",
     fontSize: 13,
-    marginBottom: 10,
+    marginBottom: 4,
   },
-  playButton: {
-    backgroundColor: "#1f2331",
-    borderRadius: 8,
-    paddingVertical: 8,
-    paddingHorizontal: 15,
-    alignSelf: "flex-start",
-  },
-  playText: {
+  trackCount: {
     color: "#00FFE0",
+    fontSize: 12,
     fontWeight: "600",
-    fontSize: 14,
-
+  },
+  trackList: {
+    marginTop: 10,
+  },
+  trackItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(255,255,255,0.05)",
+  },
+  trackNumber: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: "rgba(255,255,255,0.05)",
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 12,
+  },
+  trackNumberText: {
+    color: "#00FFE0",
+    fontSize: 12,
+    fontWeight: "600",
+  },
+  trackInfo: {
+    flex: 1,
+    marginRight: 10,
+  },
+  trackTitle: {
+    color: "#FFF",
+    fontSize: 15,
+    fontWeight: "600",
+    marginBottom: 2,
+  },
+  trackArtist: {
+    color: "#A0A0A0",
+    fontSize: 13,
+  },
+  trackDuration: {
+    color: "#A0A0A0",
+    fontSize: 12,
+    marginRight: 10,
   },
 });
