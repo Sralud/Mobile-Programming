@@ -158,7 +158,6 @@ const Home = () => {
           <View style={styles.trackInfo}>
             <Text style={styles.title} numberOfLines={1}>{item.title}</Text>
             <View style={styles.artistContainer}>
-              <Ionicons name="person-outline" size={12} color="#00FFE0" />
               <Text style={styles.artist} numberOfLines={1}>{item.artist}</Text>
             </View>
           </View>
@@ -260,14 +259,6 @@ const Home = () => {
             <View>
               <Text style={styles.headerGreeting}>Welcome back</Text>
               <Text style={styles.headerTitle}>Discover Music</Text>
-            </View>
-            <View style={styles.headerIconContainer}>
-              <LinearGradient
-                colors={['#00FFE0', '#00D4FF']}
-                style={styles.headerIcon}
-              >
-                <Ionicons name="musical-notes" size={24} color="#0B0E14" />
-              </LinearGradient>
             </View>
           </View>
         </LinearGradient>
