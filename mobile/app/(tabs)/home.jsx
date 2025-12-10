@@ -135,26 +135,7 @@ const Home = () => {
     loadData();
   }, []);
 
-  if (loading) {
-    return (
-      <View style={[styles.container, styles.loadingContainer]}>
-        <View style={styles.loadingContent}>
-          <View>
-            <LinearGradient
-              colors={['#00FFE0', '#00D4FF', '#0099FF']}
-              style={styles.loadingGradient}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-            >
-              <Ionicons name="musical-notes" size={40} color="#0B0E14" />
-            </LinearGradient>
-          </View>
-          <Text style={styles.loadingText}>Discovering amazing tracks...</Text>
-          <ActivityIndicator size="small" color="#00FFE0" style={{ marginTop: 12 }} />
-        </View>
-      </View>
-    );
-  }
+
 
   const TrackItem = ({ item, index }) => {
     const isPlaying = playingTrackId === item.id;
@@ -191,7 +172,7 @@ const Home = () => {
             >
               <Ionicons
                 name={isPlaying ? "pause" : "play"}
-                size={18}
+                size={14}
                 color="#0B0E14"
                 style={{ marginLeft: isPlaying ? 0 : 2 }}
               />
@@ -226,9 +207,9 @@ const Home = () => {
               >
                 <Ionicons
                   name={isPlaying ? "pause" : "play"}
-                  size={24}
+                  size={18}
                   color="#00FFE0"
-                  style={{ marginLeft: isPlaying ? 0 : 3 }}
+                  style={{ marginLeft: isPlaying ? 0 : 2 }}
                 />
               </LinearGradient>
             </View>
@@ -546,9 +527,9 @@ const styles = StyleSheet.create({
     elevation: 8,
   },
   playButtonGradient: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -594,13 +575,13 @@ const styles = StyleSheet.create({
     right: 12,
   },
   cardPlayIconBg: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
+    width: 28,
+    height: 28,
+    borderRadius: 14,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "rgba(11, 14, 20, 0.6)",
-    borderWidth: 2,
+    borderWidth: 1.5,
     borderColor: "rgba(0, 255, 224, 0.3)",
   },
   cardContent: {

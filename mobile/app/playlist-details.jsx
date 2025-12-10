@@ -7,14 +7,14 @@ import { useFocusEffect } from '@react-navigation/native';
 import { playlistAPI } from "../utils/playlistAPI";
 import Toast from "../components/Toast";
 import ConfirmDialog from "../components/ConfirmDialog";
+import { usePlayer } from "./contexts/PlayerContext";
 
 const PlaylistDetails = () => {
     const router = useRouter();
     const { id } = useLocalSearchParams();
+    const { setCurrentTrack } = usePlayer();
     const [playlist, setPlaylist] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [sound, setSound] = useState();
-    const [playingTrackId, setPlayingTrackId] = useState(null);
     const [showAddSongsModal, setShowAddSongsModal] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
     const [searchResults, setSearchResults] = useState([]);
@@ -41,38 +41,33 @@ const PlaylistDetails = () => {
     useFocusEffect(
         React.useCallback(() => {
             loadPlaylist();
-            return () => {
-                if (sound) {
-                    sound.unloadAsync();
-                    setPlayingTrackId(null);
-                }
-            };
         }, [id])
     );
 
     const playAudio = async (song) => {
         try {
-            if (playingTrackId === song._id) {
-                if (sound) {
-                    await sound.stopAsync();
-                    await sound.unloadAsync();
+            // Create track object for now-playing screen
+            const track = {
+                id: song.deezerTrackId || song._id,
+                title: song.title,
+                artist: song.artist,
+                image: song.image,
+                audioUrl: song.audioUrl
+            };
+
+            // Set current track in global context
+            setCurrentTrack(track);
+
+            // Navigate to now-playing screen
+            router.push({
+                pathname: "/now-playing",
+                params: {
+                    id: track.id,
+                    title: track.title,
+                    artist: track.artist,
+                    image: track.image,
+                    audioUrl: track.audioUrl
                 }
-                setSound(null);
-                setPlayingTrackId(null);
-                return;
-            }
-            if (sound) {
-                await sound.stopAsync();
-                await sound.unloadAsync();
-            }
-            const { sound: newSound } = await Audio.Sound.createAsync(
-                { uri: song.audioUrl },
-                { shouldPlay: true }
-            );
-            setSound(newSound);
-            setPlayingTrackId(song._id);
-            newSound.setOnPlaybackStatusUpdate((status) => {
-                if (status.didJustFinish) setPlayingTrackId(null);
             });
         } catch (error) {
             console.log("Error:", error);
@@ -163,11 +158,7 @@ const PlaylistDetails = () => {
         }
     };
 
-    useEffect(() => {
-        return () => {
-            if (sound) sound.unloadAsync();
-        };
-    }, [sound]);
+
 
     if (loading) {
         return (
@@ -215,7 +206,7 @@ const PlaylistDetails = () => {
                             <Text style={styles.artist} numberOfLines={1}>{item.artist}</Text>
                         </View>
                         <View style={styles.playButton}>
-                            <Ionicons name={playingTrackId === item._id ? "pause" : "play"} size={16} color="#0B0E14" />
+                            <Ionicons name="play" size={16} color="#0B0E14" />
                         </View>
                     </TouchableOpacity>
                 )}
