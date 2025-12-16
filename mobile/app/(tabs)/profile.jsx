@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity, Alert } from "react-native";
+import { View, Text, StyleSheet, Image, TouchableOpacity, Modal } from "react-native";
 import React, { useEffect, useState } from "react";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from "expo-router";
@@ -7,6 +7,7 @@ import { FontAwesome } from "@expo/vector-icons";
 const Profile = () => {
     const router = useRouter();
     const [user, setUser] = useState(null);
+    const [logoutModalVisible, setLogoutModalVisible] = useState(false);
 
     useEffect(() => {
         const loadUser = async () => {
@@ -22,26 +23,22 @@ const Profile = () => {
         loadUser();
     }, []);
 
-    const handleLogout = async () => {
-        Alert.alert("Logout", "Are you sure you want to logout?", [
-            { text: "Cancel", style: "cancel" },
-            {
-                text: "Logout",
-                style: "destructive",
-                onPress: async () => {
-                    await AsyncStorage.removeItem("token");
-                    await AsyncStorage.removeItem("user");
-                    router.replace("/");
-                }
-            }
-        ]);
+    const handleLogout = () => {
+        setLogoutModalVisible(true);
+    };
+
+    const confirmLogout = async () => {
+        await AsyncStorage.removeItem("token");
+        await AsyncStorage.removeItem("user");
+        setLogoutModalVisible(false);
+        router.replace("/");
     };
 
     return (
         <View style={styles.container}>
             <View style={styles.header}>
                 <Image
-                    source={{ uri: user?.profileImage || "https://api.dicebear.com/9.x/adventurer-neutral/svg?seed=Felix" }}
+                    source={{ uri: user?.profileImage || "https://api.dicebear.com/9.x/adventurer-neutral/png?seed=Felix" }}
                     style={styles.profileImage}
                 />
                 <Text style={styles.name}>{user?.username || "Guest User"}</Text>
@@ -70,6 +67,40 @@ const Profile = () => {
                     <Text style={[styles.menuText, { color: "#FF4444" }]}>Logout</Text>
                 </TouchableOpacity>
             </View>
+
+            {/* Logout Confirmation Modal */}
+            <Modal
+                animationType="fade"
+                transparent={true}
+                visible={logoutModalVisible}
+                onRequestClose={() => setLogoutModalVisible(false)}
+            >
+                <View style={styles.modalOverlay}>
+                    <View style={styles.modalContainer}>
+                        <View style={styles.modalHeader}>
+                            <FontAwesome name="sign-out" size={32} color="#FF4444" />
+                            <Text style={styles.modalTitle}>Logout</Text>
+                        </View>
+                        <Text style={styles.modalMessage}>
+                            Are you sure you want to logout?
+                        </Text>
+                        <View style={styles.modalButtons}>
+                            <TouchableOpacity
+                                style={styles.cancelButton}
+                                onPress={() => setLogoutModalVisible(false)}
+                            >
+                                <Text style={styles.cancelButtonText}>Cancel</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={styles.logoutButton}
+                                onPress={confirmLogout}
+                            >
+                                <Text style={styles.logoutButtonText}>Logout</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
         </View>
     );
 };
@@ -138,5 +169,72 @@ const styles = StyleSheet.create({
         color: "#fff",
         fontSize: 16,
         marginLeft: 10,
+    },
+    // Modal styles
+    modalOverlay: {
+        flex: 1,
+        backgroundColor: "rgba(0, 0, 0, 0.8)",
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    modalContainer: {
+        backgroundColor: "#151821",
+        borderRadius: 16,
+        padding: 24,
+        width: "85%",
+        maxWidth: 400,
+        borderWidth: 2,
+        borderColor: "#FF4444",
+        elevation: 10,
+    },
+    modalHeader: {
+        flexDirection: "row",
+        alignItems: "center",
+        marginBottom: 16,
+    },
+    modalTitle: {
+        color: "#fff",
+        fontSize: 20,
+        fontWeight: "700",
+        marginLeft: 12,
+        flex: 1,
+    },
+    modalMessage: {
+        color: "#9AA4B2",
+        fontSize: 15,
+        lineHeight: 22,
+        marginBottom: 24,
+    },
+    modalButtons: {
+        flexDirection: "row",
+        gap: 12,
+    },
+    cancelButton: {
+        flex: 1,
+        backgroundColor: "transparent",
+        borderRadius: 10,
+        paddingVertical: 12,
+        paddingHorizontal: 24,
+        alignItems: "center",
+        borderWidth: 2,
+        borderColor: "#9AA4B2",
+    },
+    cancelButtonText: {
+        color: "#9AA4B2",
+        fontSize: 16,
+        fontWeight: "700",
+    },
+    logoutButton: {
+        flex: 1,
+        backgroundColor: "#FF4444",
+        borderRadius: 10,
+        paddingVertical: 12,
+        paddingHorizontal: 24,
+        alignItems: "center",
+    },
+    logoutButtonText: {
+        color: "#fff",
+        fontSize: 16,
+        fontWeight: "700",
     },
 });
