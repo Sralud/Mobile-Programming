@@ -67,7 +67,9 @@ export default function VibePicker() {
   const [selectedMood, setSelectedMood] = useState(null);
 
   const handlePlayTrack = (track) => {
-    playTrack(track);
+    // Pass the entire mood's track list as the queue context
+    playTrack(track, selectedMood.tracks);
+
     router.push({
       pathname: "/now-playing",
       params: {

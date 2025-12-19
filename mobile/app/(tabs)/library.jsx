@@ -25,23 +25,25 @@ const Library = () => {
   const [toast, setToast] = useState({ visible: false, message: '', type: 'success' });
   const [confirmDialog, setConfirmDialog] = useState({ visible: false, title: '', message: '', onConfirm: null });
 
-  useEffect(() => {
-    const loadUser = async () => {
-      try {
-        const userData = await AsyncStorage.getItem("user");
-        if (userData) {
-          setUser(JSON.parse(userData));
-        }
-      } catch (error) {
-        console.log("Error loading user", error);
+  const loadUser = async () => {
+    try {
+      const userData = await AsyncStorage.getItem("user");
+      if (userData) {
+        setUser(JSON.parse(userData));
       }
-    };
+    } catch (error) {
+      console.log("Error loading user", error);
+    }
+  };
+
+  useEffect(() => {
     loadUser();
   }, []);
 
   useFocusEffect(
     React.useCallback(() => {
       loadPlaylists();
+      loadUser();
     }, [])
   );
 
