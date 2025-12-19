@@ -11,6 +11,18 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
+// Root route for health check
+app.get("/", (req, res) => {
+    res.json({
+        message: "Rhevo Backend API is running! 🎵",
+        status: "active",
+        endpoints: {
+            auth: "/api/auth",
+            playlists: "/api/playlists"
+        }
+    });
+});
+
 app.use("/api/auth", authRoutes);
 app.use("/api/playlists", playlistRoutes);
 
