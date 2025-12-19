@@ -4,8 +4,8 @@
 // Determine the base URL based on environment
 // __DEV__ is a React Native global that's true in development mode
 const BASE_URL = __DEV__
-    ? "http://192.168.1.10:3000"  // Local development server
-    : "https://your-production-url.com";  // Production server (update when deployed)
+    ? "https://rhevo-backend.onrender.com"  // Using production for testing
+    : "https://rhevo-backend.onrender.com";  // Production server
 
 // API Endpoints
 const API = {
