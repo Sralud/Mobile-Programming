@@ -31,16 +31,24 @@ async function testAPI() {
 
         console.log('Generation Response Status:', genResponse.status);
         const genText = await genResponse.text();
-        console.log('Generation Response:', genText);
+        console.log('Generation Response Length:', genText.length);
+
+        const fs = require('fs');
+        fs.writeFileSync('api_response.json', genText);
+        console.log('Response saved to api_response.json');
 
         if (genResponse.ok) {
-            const genData = JSON.parse(genText);
-            if (genData.code === 200 && genData.data && genData.data.taskId) {
-                console.log('\n✅ API is working!');
-                console.log('Task ID:', genData.data.taskId);
-                console.log('\nYou can now use the Create tab to generate music!');
-            } else {
-                console.log('\n⚠️ Unexpected response structure');
+            try {
+                const genData = JSON.parse(genText);
+                if (genData.code === 200 && genData.data && genData.data.taskId) {
+                    console.log('\n✅ API is working!');
+                    console.log('Task ID:', genData.data.taskId);
+                } else {
+                    console.log('\n⚠️ Unexpected response structure');
+                    console.log('Keys found:', Object.keys(genData));
+                }
+            } catch (e) {
+                console.log('Failed to parse JSON:', e.message);
             }
         } else {
             console.log('\n❌ API returned an error');

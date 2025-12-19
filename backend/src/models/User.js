@@ -22,7 +22,15 @@ const userSchema = new mongoose.Schema({
     profileImage: {
         type: String,
         default: ""
-    }
+    },
+    likedSongs: [{
+        id: String,
+        title: String,
+        artist: String,
+        image: String,
+        audioUrl: String,
+        addedAt: { type: Date, default: Date.now }
+    }]
 });
 
 // Hash password before saving

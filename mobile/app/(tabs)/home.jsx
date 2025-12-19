@@ -81,10 +81,10 @@ const Home = () => {
     }
   };
 
-  const playAudio = async (track) => {
+  const playAudio = async (track, queue = []) => {
     try {
-      // Set the current track in global context and play it
-      playTrack(track);
+      // Set the current track in global context and play it, passing the queue
+      playTrack(track, queue);
 
       // Navigate to now-playing screen with track data
       router.push({
@@ -144,7 +144,7 @@ const Home = () => {
       <View>
         <TouchableOpacity
           style={styles.trackItem}
-          onPress={() => playAudio(item)}
+          onPress={() => playAudio(item, dailyBeats)}
           activeOpacity={0.8}
         >
           <View style={styles.trackImageContainer}>
@@ -189,7 +189,7 @@ const Home = () => {
       <View>
         <TouchableOpacity
           style={styles.card}
-          onPress={() => playAudio(item)}
+          onPress={() => playAudio(item, freshFinds)}
           activeOpacity={0.9}
         >
           <View style={styles.cardImageContainer}>

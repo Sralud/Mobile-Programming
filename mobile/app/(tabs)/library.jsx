@@ -8,13 +8,14 @@ import { useRouter } from "expo-router";
 import { playlistAPI } from "../../utils/playlistAPI";
 import Toast from "../../components/Toast";
 import ConfirmDialog from "../../components/ConfirmDialog";
+import { usePlayer } from "../contexts/PlayerContext";
 
 const Library = () => {
   const router = useRouter();
+  const { playTrack } = usePlayer();
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [sound, setSound] = useState();
   const [activePreviewUrl, setActivePreviewUrl] = useState(null);
   const [user, setUser] = useState(null);
   const [playlists, setPlaylists] = useState([]);
@@ -41,12 +42,6 @@ const Library = () => {
   useFocusEffect(
     React.useCallback(() => {
       loadPlaylists();
-      return () => {
-        if (sound) {
-          sound.unloadAsync();
-          setActivePreviewUrl(null);
-        }
-      };
     }, [])
   );
 
@@ -142,54 +137,37 @@ const Library = () => {
     }
   };
 
-  const playSong = async (audioUrl) => {
-    if (sound) {
-      await sound.unloadAsync();
-    }
-
-    if (activePreviewUrl === audioUrl) {
-      setActivePreviewUrl(null);
-      return;
-    }
-
+  const playAudio = async (item) => {
     try {
-      const { sound: newSound } = await Audio.Sound.createAsync(
-        { uri: audioUrl },
-        { shouldPlay: true }
-      );
-      setSound(newSound);
-      setActivePreviewUrl(audioUrl);
+      const mapToTrack = (t) => ({
+        id: t.id,
+        title: t.name,
+        artist: t.artist_name,
+        image: t.image,
+        audioUrl: t.audio
+      });
 
-      newSound.setOnPlaybackStatusUpdate((status) => {
-        if (status.didJustFinish) {
-          setActivePreviewUrl(null);
-        }
+      const track = mapToTrack(item);
+      const queue = searchResults.map(mapToTrack);
+
+      playTrack(track, queue);
+
+      router.push({
+        pathname: "/now-playing",
+        params: track
       });
     } catch (error) {
       console.log("Error playing sound", error);
     }
   };
 
-  useEffect(() => {
-    return () => {
-      if (sound) {
-        sound.unloadAsync();
-      }
-    };
-  }, [sound]);
 
-  useEffect(() => {
-    if (searchQuery.length === 0 && sound) {
-      sound.unloadAsync();
-      setActivePreviewUrl(null);
-    }
-  }, [searchQuery]);
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Image
-          source={require("../../assets/images/mix3.png")}
+          source={{ uri: user?.profileImage || "https://api.dicebear.com/9.x/adventurer-neutral/png?seed=Felix" }}
           style={styles.profilePic}
         />
         <View>
@@ -218,7 +196,7 @@ const Library = () => {
               <TouchableOpacity
                 key={item.id}
                 style={styles.resultItem}
-                onPress={() => playSong(item.audio)}
+                onPress={() => playAudio(item)}
               >
                 <Image source={{ uri: item.image }} style={styles.thumb} />
                 <View style={styles.info}>

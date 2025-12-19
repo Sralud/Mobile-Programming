@@ -4,16 +4,16 @@ import { Ionicons } from "@expo/vector-icons";
 import { Audio } from 'expo-av';
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { useFocusEffect } from '@react-navigation/native';
+import { usePlayer } from './contexts/PlayerContext';
 
 const DEEZER_API = "https://api.deezer.com";
 
 const AllTracks = () => {
     const router = useRouter();
     const { type } = useLocalSearchParams();
+    const { playTrack } = usePlayer();
     const [tracks, setTracks] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [sound, setSound] = useState();
-    const [playingTrackId, setPlayingTrackId] = useState(null);
 
     const fetchTracks = async () => {
         try {
@@ -46,50 +46,16 @@ const AllTracks = () => {
 
     const playAudio = async (track) => {
         try {
-            if (playingTrackId === track.id) {
-                if (sound) {
-                    await sound.stopAsync();
-                    await sound.unloadAsync();
-                }
-                setSound(null);
-                setPlayingTrackId(null);
-                return;
-            }
-            if (sound) {
-                await sound.stopAsync();
-                await sound.unloadAsync();
-            }
-            const { sound: newSound } = await Audio.Sound.createAsync(
-                { uri: track.audioUrl },
-                { shouldPlay: true }
-            );
-            setSound(newSound);
-            setPlayingTrackId(track.id);
-            newSound.setOnPlaybackStatusUpdate((status) => {
-                if (status.didJustFinish) setPlayingTrackId(null);
+            playTrack(track, tracks);
+
+            router.push({
+                pathname: "/now-playing",
+                params: track
             });
         } catch (error) {
             console.log("Error:", error);
         }
     };
-
-    useEffect(() => {
-        return () => {
-            if (sound) sound.unloadAsync();
-        };
-    }, [sound]);
-
-    // Stop audio when leaving this screen
-    useFocusEffect(
-        React.useCallback(() => {
-            return () => {
-                if (sound) {
-                    sound.unloadAsync();
-                    setPlayingTrackId(null);
-                }
-            };
-        }, [])
-    );
 
     useEffect(() => {
         fetchTracks();

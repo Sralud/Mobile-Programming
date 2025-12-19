@@ -47,16 +47,21 @@ const PlaylistDetails = () => {
     const playAudio = async (song) => {
         try {
             // Create track object for now-playing screen
-            const track = {
-                id: song.deezerTrackId || song._id,
-                title: song.title,
-                artist: song.artist,
-                image: song.image,
-                audioUrl: song.audioUrl
-            };
+            const mapSongToTrack = (s) => ({
+                id: s.deezerTrackId || s._id,
+                title: s.title,
+                artist: s.artist,
+                image: s.image,
+                audioUrl: s.audioUrl
+            });
+
+            const track = mapSongToTrack(song);
+
+            // Map entire playlist to queue
+            const queue = (playlist?.songs || []).map(mapSongToTrack);
 
             // Set current track in global context and play it
-            playTrack(track);
+            playTrack(track, queue);
 
             // Navigate to now-playing screen
             router.push({

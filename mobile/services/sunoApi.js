@@ -53,9 +53,14 @@ export const generateMusic = async (prompt, genre = '') => {
         const data = JSON.parse(responseText);
         console.log('Success response:', data);
 
-        // API returns {code: 200, msg: "success", data: {taskId: "..."}}
-        if (data.code !== 200 || !data.data || !data.data.taskId) {
-            throw new Error('Invalid API response structure');
+        // API checks
+        if (data.code !== 200) {
+            // Throw the actual message from the API (e.g., "insufficient credits")
+            throw new Error(data.msg || 'Suno API Error');
+        }
+
+        if (!data.data || !data.data.taskId) {
+            throw new Error('Invalid API response structure: Missing taskId');
         }
 
         return data;
