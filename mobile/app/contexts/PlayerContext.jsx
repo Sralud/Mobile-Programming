@@ -27,8 +27,13 @@ export const PlayerProvider = ({ children }) => {
             // Stop and unload previous sound if exists
             if (sound) {
                 console.log('Stopping previous sound');
-                await sound.stopAsync();
-                await sound.unloadAsync();
+                try {
+                    await sound.stopAsync();
+                    await sound.unloadAsync();
+                } catch (unloadError) {
+                    console.log('Error unloading previous sound:', unloadError.message);
+                    // Continue anyway - sound may not have loaded successfully
+                }
             }
 
             // Set the new track
@@ -87,6 +92,23 @@ export const PlayerProvider = ({ children }) => {
         }
     };
 
+    // Function to clear player state (for logout)
+    const clearPlayer = async () => {
+        try {
+            if (sound) {
+                await sound.stopAsync();
+                await sound.unloadAsync();
+            }
+            setSound(null);
+            setCurrentTrack(null);
+            setIsPlaying(false);
+            setPosition(0);
+            setDuration(0);
+        } catch (error) {
+            console.log('Error clearing player:', error);
+        }
+    };
+
     return (
         <PlayerContext.Provider value={{
             currentTrack,
@@ -96,7 +118,8 @@ export const PlayerProvider = ({ children }) => {
             position,
             duration,
             playTrack,
-            togglePlayPause
+            togglePlayPause,
+            clearPlayer
         }}>
             {children}
         </PlayerContext.Provider>

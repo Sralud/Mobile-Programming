@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter, useLocalSearchParams } from "expo-router";
@@ -9,15 +9,24 @@ export default function NowPlaying() {
   const params = useLocalSearchParams();
   const { currentTrack, isPlaying, togglePlayPause, position, duration, sound } = usePlayer();
 
+  // Use ref to track the latest sound and isPlaying without triggering re-runs
+  const soundRef = useRef(sound);
+  const isPlayingRef = useRef(isPlaying);
+
+  useEffect(() => {
+    soundRef.current = sound;
+    isPlayingRef.current = isPlaying;
+  }, [sound, isPlaying]);
+
   // Pause playback when leaving the now-playing screen
   useEffect(() => {
     return () => {
       // Cleanup: pause when component unmounts (user navigates back)
-      if (sound && isPlaying) {
-        sound.pauseAsync().catch(() => { });
+      if (soundRef.current && isPlayingRef.current) {
+        soundRef.current.pauseAsync().catch(() => { });
       }
     };
-  }, [sound, isPlaying]);
+  }, []); // Empty dependency array - only runs on mount/unmount
 
   // Use currentTrack from context (what's actually playing) as primary source
   // Params are only used as fallback during initial load

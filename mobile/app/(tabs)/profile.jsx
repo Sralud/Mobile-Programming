@@ -3,9 +3,11 @@ import React, { useEffect, useState } from "react";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from "expo-router";
 import { FontAwesome } from "@expo/vector-icons";
+import { usePlayer } from '../contexts/PlayerContext';
 
 const Profile = () => {
     const router = useRouter();
+    const { clearPlayer } = usePlayer();
     const [user, setUser] = useState(null);
     const [logoutModalVisible, setLogoutModalVisible] = useState(false);
 
@@ -28,6 +30,7 @@ const Profile = () => {
     };
 
     const confirmLogout = async () => {
+        await clearPlayer(); // Clear player state
         await AsyncStorage.removeItem("token");
         await AsyncStorage.removeItem("user");
         setLogoutModalVisible(false);
