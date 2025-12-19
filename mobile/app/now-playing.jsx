@@ -1,98 +1,41 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter, useLocalSearchParams } from "expo-router";
-import { useFocusEffect } from '@react-navigation/native';
-import { Audio } from 'expo-av';
+import { usePlayer } from './contexts/PlayerContext';
 
 export default function NowPlaying() {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [sound, setSound] = useState();
-  const [position, setPosition] = useState(0);
-  const [duration, setDuration] = useState(0);
   const router = useRouter();
   const params = useLocalSearchParams();
+  const { currentTrack, isPlaying, togglePlayPause, position, duration, sound } = usePlayer();
 
-  // Extract track data from params
-  const track = {
+  // Use ref to track the latest sound and isPlaying without triggering re-runs
+  const soundRef = useRef(sound);
+  const isPlayingRef = useRef(isPlaying);
+
+  useEffect(() => {
+    soundRef.current = sound;
+    isPlayingRef.current = isPlaying;
+  }, [sound, isPlaying]);
+
+  // Pause playback when leaving the now-playing screen
+  useEffect(() => {
+    return () => {
+      // Cleanup: pause when component unmounts (user navigates back)
+      if (soundRef.current && isPlayingRef.current) {
+        soundRef.current.pauseAsync().catch(() => { });
+      }
+    };
+  }, []); // Empty dependency array - only runs on mount/unmount
+
+  // Use currentTrack from context (what's actually playing) as primary source
+  // Params are only used as fallback during initial load
+  const track = currentTrack || {
     id: params.id,
     title: params.title || "Unknown Track",
     artist: params.artist || "Unknown Artist",
     image: params.image,
     audioUrl: params.audioUrl
-  };
-
-  // Debug: Log the received params
-  console.log("Now Playing - Received params:", params);
-  console.log("Now Playing - Track object:", track);
-
-  // Load and play audio when component mounts
-  useEffect(() => {
-    loadAudio();
-    return () => {
-      if (sound) {
-        sound.unloadAsync();
-      }
-    };
-  }, []);
-
-  // Stop audio when leaving this screen
-  useFocusEffect(
-    React.useCallback(() => {
-      return () => {
-        if (sound) {
-          sound.stopAsync().catch(() => { });
-          sound.unloadAsync().catch(() => { });
-        }
-      };
-    }, [sound])
-  );
-
-  const loadAudio = async () => {
-    try {
-      // Check if audioUrl exists before attempting to load
-      if (!track.audioUrl) {
-        console.log("No audio URL provided");
-        return;
-      }
-
-      const { sound: newSound } = await Audio.Sound.createAsync(
-        { uri: track.audioUrl },
-        { shouldPlay: true },
-        onPlaybackStatusUpdate
-      );
-      setSound(newSound);
-      setIsPlaying(true);
-    } catch (error) {
-      console.log("Error loading audio:", error);
-    }
-  };
-
-  const onPlaybackStatusUpdate = (status) => {
-    if (status.isLoaded) {
-      setPosition(status.positionMillis);
-      setDuration(status.durationMillis);
-      setIsPlaying(status.isPlaying);
-
-      if (status.didJustFinish) {
-        setIsPlaying(false);
-        setPosition(0);
-      }
-    }
-  };
-
-  const togglePlayPause = async () => {
-    if (!sound) return;
-
-    try {
-      if (isPlaying) {
-        await sound.pauseAsync();
-      } else {
-        await sound.playAsync();
-      }
-    } catch (error) {
-      console.log("Error toggling playback:", error);
-    }
   };
 
   const formatTime = (millis) => {
@@ -109,10 +52,7 @@ export default function NowPlaying() {
       {/*Collapse Button */}
       <TouchableOpacity
         style={styles.closeButton}
-        onPress={() => {
-          if (sound) sound.unloadAsync().catch(() => { });
-          router.back();
-        }}
+        onPress={() => router.back()}
         activeOpacity={0.8}
       >
         <Ionicons name="chevron-down" size={28} color="#00FFE0" />

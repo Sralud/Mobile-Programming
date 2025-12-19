@@ -63,11 +63,11 @@ const playlistImagePlaceholder = require("../../assets/images/mix1.png");
 
 export default function VibePicker() {
   const router = useRouter();
-  const { setCurrentTrack } = usePlayer();
+  const { playTrack } = usePlayer();
   const [selectedMood, setSelectedMood] = useState(null);
 
-  const playTrack = (track) => {
-    setCurrentTrack(track);
+  const handlePlayTrack = (track) => {
+    playTrack(track);
     router.push({
       pathname: "/now-playing",
       params: {
@@ -124,7 +124,7 @@ export default function VibePicker() {
                 <TouchableOpacity
                   key={track.id}
                   style={styles.trackItem}
-                  onPress={() => playTrack(track)}
+                  onPress={() => handlePlayTrack(track)}
                   activeOpacity={0.7}
                 >
                   <View style={styles.trackNumber}>

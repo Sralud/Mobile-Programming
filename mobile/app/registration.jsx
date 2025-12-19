@@ -2,6 +2,7 @@ import { FontAwesome } from '@expo/vector-icons';
 import { Link, useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import API from '../config/api';
 
 const Registration = () => {
   const router = useRouter();
@@ -43,7 +44,7 @@ const Registration = () => {
     }
 
     try {
-      const res = await fetch("http://192.168.1.10:3000/api/auth/register", {
+      const res = await fetch(API.AUTH.REGISTER, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

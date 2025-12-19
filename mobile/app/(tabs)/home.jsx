@@ -24,7 +24,7 @@ const { width } = Dimensions.get('window');
 
 const Home = () => {
   const router = useRouter();
-  const { setCurrentTrack } = usePlayer();
+  const { playTrack } = usePlayer();
   const [dailyBeats, setDailyBeats] = useState([]);
   const [freshFinds, setFreshFinds] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -83,8 +83,8 @@ const Home = () => {
 
   const playAudio = async (track) => {
     try {
-      // Set the current track in global context
-      setCurrentTrack(track);
+      // Set the current track in global context and play it
+      playTrack(track);
 
       // Navigate to now-playing screen with track data
       router.push({
