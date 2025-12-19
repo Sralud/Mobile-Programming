@@ -3,6 +3,7 @@ import { Link, useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import API from '../config/api';
 
 const Login = () => {
   const router = useRouter();
@@ -13,12 +14,12 @@ const Login = () => {
 
   const handleLogin = async () => {
     if (!email || !password) {
-      alert("Please enter email and password.");
+      alert("Please enter email/username and password.");
       return;
     }
 
     try {
-      const res = await fetch("http://192.168.1.10:3000/api/auth/login", {
+      const res = await fetch(API.AUTH.LOGIN, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password })
@@ -55,10 +56,10 @@ const Login = () => {
       </View>
 
       <View style={styles.inputWrapper}>
-        <FontAwesome name="envelope" color="#aaa" size={20} style={styles.icon} />
+        <FontAwesome name="user" color="#aaa" size={20} style={styles.icon} />
         <TextInput
           style={styles.input}
-          placeholder="Email"
+          placeholder="Email or Username"
           placeholderTextColor="#aaa"
           autoCapitalize="none"
           value={email}

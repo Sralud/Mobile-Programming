@@ -73,10 +73,12 @@ router.post("/login", async (req, res) => {
         if (!email || !password)
             return res.status(400).json({ message: "All fields are required" });
 
-        if (!email.includes("@"))
-            return res.status(400).json({ message: "Invalid email address" });
+        // Check if input is email or username
+        const isEmail = email.includes("@");
+        const user = isEmail
+            ? await User.findOne({ email })
+            : await User.findOne({ username: email });
 
-        const user = await User.findOne({ email });
         if (!user)
             return res.status(400).json({ message: "Invalid credentials" });
 

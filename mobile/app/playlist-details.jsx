@@ -12,7 +12,7 @@ import { usePlayer } from "./contexts/PlayerContext";
 const PlaylistDetails = () => {
     const router = useRouter();
     const { id } = useLocalSearchParams();
-    const { setCurrentTrack } = usePlayer();
+    const { playTrack } = usePlayer();
     const [playlist, setPlaylist] = useState(null);
     const [loading, setLoading] = useState(true);
     const [showAddSongsModal, setShowAddSongsModal] = useState(false);
@@ -55,8 +55,8 @@ const PlaylistDetails = () => {
                 audioUrl: song.audioUrl
             };
 
-            // Set current track in global context
-            setCurrentTrack(track);
+            // Set current track in global context and play it
+            playTrack(track);
 
             // Navigate to now-playing screen
             router.push({

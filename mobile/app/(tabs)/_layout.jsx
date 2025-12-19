@@ -5,7 +5,7 @@ import { usePlayer } from "../contexts/PlayerContext";
 
 export default function TabsLayout() {
   const router = useRouter();
-  const { currentTrack } = usePlayer();
+  const { currentTrack, isPlaying, togglePlayPause } = usePlayer();
 
   return (
     <>
@@ -123,7 +123,19 @@ export default function TabsLayout() {
             </View>
           </View>
 
-          <Ionicons name="play" size={28} color="#00FFE0" />
+          <TouchableOpacity
+            onPress={(e) => {
+              e.stopPropagation();
+              togglePlayPause();
+            }}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          >
+            <Ionicons
+              name={isPlaying ? "pause" : "play"}
+              size={28}
+              color="#00FFE0"
+            />
+          </TouchableOpacity>
         </TouchableOpacity>
       )}
     </>
